@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>민수기 — 광야의 질서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;500;600;700;900&family=Noto+Sans+KR:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --sand-light:#F4EAD3;
+    --sand-deep:#E6D2A3;
+    --amber-glow:#D9A441;
+    --gold-deep:#B0731C;
+    --sky-dusk:#5F7E96;
+    --clay-red:#A4543C;
+    --ink:#3B2E1E;
+    --ink-soft:#5C4A34;
+    --ivory:#FBF6EA;
+    --bg-r:244; --bg-g:234; --bg-b:211;
+    --bg2-r:230; --bg2-g:210; --bg2-b:163;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:'Noto Serif KR', serif;
+    font-style:normal;
+    color:var(--ink);
+    background:linear-gradient(160deg, rgb(var(--bg-r),var(--bg-g),var(--bg-b)) 0%, rgb(var(--bg2-r),var(--bg2-g),var(--bg2-b)) 100%);
+    transition:background 0.9s ease;
+    overflow-x:hidden;
+    line-height:1.9;
+  }
+  em, i{font-style:normal;}
+
+  canvas#dust{
+    position:fixed; inset:0; width:100vw; height:100vh;
+    pointer-events:none; z-index:1; opacity:0.55;
+  }
+
+  .wrap{position:relative; z-index:2;}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    min-height:100vh;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; padding:8vh 6vw 10vh;
+  }
+  .hero .eyebrow{
+    font-family:'Noto Sans KR', sans-serif;
+    font-size:0.78rem; letter-spacing:0.42em; font-weight:600;
+    color:var(--gold-deep); text-transform:uppercase; margin-bottom:1.6rem;
+  }
+  .hero h1{
+    font-size:clamp(2.1rem, 5.2vw, 3.4rem);
+    font-weight:900; color:var(--ink); line-height:1.3;
+    margin-bottom:0.9rem; letter-spacing:-0.01em;
+  }
+  .hero h1 span{
+    display:block; font-size:clamp(1.02rem, 2.1vw, 1.28rem);
+    font-weight:500; color:var(--ink-soft); margin-top:0.7rem; letter-spacing:0;
+  }
+  .hero .title-rule{
+    width:64px; height:2px; background:var(--gold-deep); opacity:0.6;
+    margin:1.8rem auto 2.4rem;
+  }
+  .hero blockquote{
+    max-width:760px;
+    font-size:clamp(1.35rem, 3vw, 2.05rem);
+    font-weight:600; line-height:1.75; color:var(--ink);
+    border:none;
+  }
+  .hero .ref{
+    display:block; margin-top:1.4rem; font-family:'Noto Sans KR', sans-serif;
+    font-size:0.85rem; letter-spacing:0.12em; color:var(--ink-soft); font-weight:500;
+  }
+  .hero .lede{
+    max-width:620px; margin-top:3.2rem; font-size:1.02rem; color:var(--ink-soft);
+    font-weight:400;
+  }
+  .scroll-cue{
+    margin-top:4rem; width:1px; height:52px;
+    background:linear-gradient(var(--gold-deep), transparent);
+    position:relative; opacity:0.6;
+  }
+
+  /* ---------- SECTIONS ---------- */
+  section.chapter{
+    padding:14vh 6vw;
+    display:flex; justify-content:center;
+  }
+  .chapter-inner{max-width:640px; width:100%;}
+  .eyebrow{
+    font-family:'Noto Sans KR', sans-serif;
+    font-size:0.74rem; letter-spacing:0.36em; font-weight:600;
+    color:var(--gold-deep); text-transform:uppercase; margin-bottom:1.6rem;
+  }
+  .lead{
+    font-size:1.12rem; font-weight:500; color:var(--ink); margin-bottom:1.1rem;
+  }
+  blockquote.verse{
+    border-left:2px solid var(--gold-deep);
+    padding:0.3rem 0 0.3rem 1.6rem;
+    margin:1.2rem 0 1.5rem;
+    font-size:1.22rem; font-weight:600; color:var(--ink);
+  }
+  blockquote.verse .ref{
+    display:block; margin-top:0.65rem; font-family:'Noto Sans KR', sans-serif;
+    font-size:0.8rem; letter-spacing:0.08em; color:var(--ink-soft); font-weight:500;
+  }
+  .para{
+    font-size:1.02rem; color:var(--ink-soft); margin-bottom:1.35rem; font-weight:400;
+  }
+  .para:last-child{margin-bottom:0;}
+
+  .reveal{
+    opacity:0; transform:translateY(22px);
+    transition:opacity 0.9s ease, transform 0.9s ease;
+  }
+  .reveal.visible{opacity:1; transform:translateY(0);}
+
+  .divider{
+    width:56px; height:1px; background:var(--gold-deep); opacity:0.55;
+    margin:0 auto; display:block;
+  }
+  section.chapter .divider{margin-bottom:2.4rem;}
+
+  /* ---------- CAMP DIAGRAM (signature) ---------- */
+  .camp-wrap{
+    display:flex; justify-content:center; margin:1rem 0 2.6rem;
+  }
+  .camp-wrap svg{width:min(340px, 78vw); height:auto;}
+  .camp-tick{stroke-dasharray:40; stroke-dashoffset:40; transition:stroke-dashoffset 1.4s ease;}
+  .camp-wrap.visible .camp-tick{stroke-dashoffset:0;}
+  .camp-core{
+    transform-origin:center; opacity:0; transition:opacity 1.4s ease 0.5s;
+  }
+  .camp-wrap.visible .camp-core{opacity:1;}
+
+  /* ---------- CLOSING ---------- */
+  .closing{
+    padding:16vh 6vw 20vh;
+    display:flex; justify-content:center;
+    text-align:center;
+  }
+  .closing-inner{max-width:600px;}
+  .seal{margin:0 auto 2.6rem;}
+  .closing .line1{font-size:1.02rem; color:var(--ink-soft); margin-bottom:1.9rem;}
+  .closing .flow{
+    font-size:1.06rem; color:var(--ink); line-height:2.15; margin-bottom:1.9rem; font-weight:500;
+  }
+  .closing .flow br{content:""; display:block; margin:0.15rem 0;}
+  .closing .culmination{
+    font-family:'Noto Sans KR', sans-serif;
+    font-size:0.82rem; letter-spacing:0.28em; color:var(--gold-deep);
+    text-transform:uppercase; font-weight:600; margin:2.4rem 0;
+  }
+  .closing .final{
+    font-size:1.18rem; font-weight:600; color:var(--ink); line-height:1.95;
+  }
+  footer{
+    text-align:center; padding:5vh 6vw 8vh;
+    font-family:'Noto Sans KR', sans-serif;
+    font-size:0.76rem; color:var(--ink-soft); letter-spacing:0.08em; opacity:0.75;
+  }
+
+  @media (max-width:560px){
+    blockquote.verse{font-size:1.08rem;}
+    .hero blockquote{font-size:1.3rem;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .reveal{transition:none; opacity:1; transform:none;}
+    .camp-tick{transition:none; stroke-dashoffset:0;}
+    .camp-core{transition:none; opacity:1;}
+    html{scroll-behavior:auto;}
+  }
+</style>
+</head>
+<body>
+
+<canvas id="dust"></canvas>
+
+<div class="wrap">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="eyebrow">민수기 · Numbers 1 – 9</div>
+    <h1>광야의 질서<span>이름으로 부르시고, 하나로 세우시다</span></h1>
+    <div class="title-rule"></div>
+    <blockquote>
+      “이스라엘 자손이 이집트 땅에서 나온 그 이듬해 둘째 달 초하룻날에, 시나이 광야에 있는 회막에서 여호와께서 모세에게 말씀하셨다.”
+      <span class="ref">민수기 1:1</span>
+    </blockquote>
+    <p class="lede">광야는 비어 있는 곳처럼 보입니다. 그러나 성경은 그곳을 ‘말씀이 시작되는 자리’로 보여 줍니다. 창조의 처음에 하나님께서 말씀으로 혼돈을 질서로 바꾸셨듯이, 이제 광야 한가운데서 다시 한 백성을 질서 속으로 이끄십니다.</p>
+    <div class="scroll-cue"></div>
+  </section>
+
+  <!-- SECTION 1: 계수 -->
+  <section class="chapter" data-bg="244,234,211" data-bg2="230,210,163">
+    <div class="chapter-inner">
+      <span class="divider"></span>
+      <p class="eyebrow reveal">부르심 · 이름으로 세다</p>
+      <p class="lead reveal">그 시작은 사람을 세는 일입니다.</p>
+      <blockquote class="verse reveal">
+        “너희는… 모든 남자의 명수를 하나하나 조사하여라.”
+        <span class="ref">민수기 1:2</span>
+      </blockquote>
+      <p class="para reveal">이 계수는 단순한 숫자 확인이 아닙니다. 하나님께서 각 사람을 기억하시고, 이름 없는 존재가 아니라 목적 있는 존재로 부르시는 사건입니다. 창조 때 생명을 불어넣으신 하나님께서 이제 그 생명을 ‘부르심 받은 존재’로 세우십니다.</p>
+      <p class="lead reveal" style="margin-top:2.2rem;">그리고 그들은 군대로 세워집니다.</p>
+      <blockquote class="verse reveal">
+        “군 복무를 할 수 있는 이십 세 이상 된 모든 남자…”
+        <span class="ref">민수기 1:3</span>
+      </blockquote>
+      <p class="para reveal">생명은 단순히 존재하기 위해 주어진 것이 아니라, 하나님의 뜻을 이루기 위해 사용됩니다. 이것이 선택의 시작입니다.</p>
+    </div>
+  </section>
+
+  <!-- SECTION 2: 구별 -->
+  <section class="chapter" data-bg="238,222,178" data-bg2="224,198,140">
+    <div class="chapter-inner">
+      <span class="divider"></span>
+      <p class="eyebrow reveal">구별 · 다른 부르심</p>
+      <p class="lead reveal">그러나 동시에 하나님은 다른 선택을 하십니다.</p>
+      <blockquote class="verse reveal">
+        “레위 지파만은 그 수에 들게 하지도 말라.”
+        <span class="ref">민수기 1:49</span>
+      </blockquote>
+      <p class="lead reveal" style="margin-top:1.6rem;">그들은 싸움이 아니라 하나님 가까이에 두십니다.</p>
+      <blockquote class="verse reveal">
+        “그들은 성막을 섬기며…”
+        <span class="ref">민수기 1:50</span>
+      </blockquote>
+      <p class="para reveal">여기서 드러나는 하나님의 의도는 분명합니다. 사람의 궁극적인 위치는 세상의 중심이 아니라, 하나님의 임재 곁입니다.</p>
+    </div>
+  </section>
+
+  <!-- SECTION 3: 질서 (camp diagram signature) -->
+  <section class="chapter" data-bg="231,209,151" data-bg2="216,183,110">
+    <div class="chapter-inner">
+      <span class="divider"></span>
+      <p class="eyebrow reveal">질서 · 중심을 향하여</p>
+      <p class="lead reveal">이어 하나님은 그들을 배치하십니다.</p>
+      <blockquote class="verse reveal">
+        “회막을 향하여 진을 쳐야 한다.”
+        <span class="ref">민수기 2:2</span>
+      </blockquote>
+
+      <div class="camp-wrap reveal" id="campDiagram">
+        <svg viewBox="0 0 320 320" xmlns="http://www.w3.org/2000/svg">
+          <g stroke="#B0731C" stroke-width="2" fill="none" opacity="0.85">
+            <!-- 12 tribes as ticks around the circle, all lines pointing to center -->
+            <g id="ticks"></g>
+          </g>
+          <circle class="camp-core" cx="160" cy="160" r="26" fill="#D9A441" opacity="0.9"></circle>
+          <circle class="camp-core" cx="160" cy="160" r="10" fill="#FBF6EA"></circle>
+        </svg>
+      </div>
+
+      <p class="para reveal">모든 지파는 서로를 향하지 않고, 오직 중심—하나님—을 향합니다. 동서남북으로 흩어져 있지만, 방향은 하나입니다. 이것이 생명이 나아가야 할 질서입니다.</p>
+    </div>
+  </section>
+
+  <!-- SECTION 4: 대속 -->
+  <section class="chapter" data-bg="224,196,128" data-bg2="207,168,96">
+    <div class="chapter-inner">
+      <span class="divider"></span>
+      <p class="eyebrow reveal">대속 · 나의 것</p>
+      <p class="lead reveal">그리고 하나님은 레위인을 따로 세우십니다.</p>
+      <blockquote class="verse reveal">
+        “나는 레위인들을 선택하여… 맏아들을 대신하게 하였다.”
+        <span class="ref">민수기 3:12</span>
+      </blockquote>
+      <p class="para reveal">여기서 생명은 한 단계 더 나아갑니다. 단순한 선택이 아니라 ‘대속’의 원리가 등장합니다. 어떤 존재가 대신 하나님께 속하게 됩니다.</p>
+      <blockquote class="verse reveal">
+        “처음 난 것은 다 나의 것이다.”
+        <span class="ref">민수기 3:13</span>
+      </blockquote>
+      <p class="para reveal">생명은 본래 하나님께 속한 것입니다. 하나님은 그것을 다시 회복하십니다.</p>
+    </div>
+  </section>
+
+  <!-- SECTION 5: 정결 -->
+  <section class="chapter" data-bg="216,182,108" data-bg2="196,150,80">
+    <div class="chapter-inner">
+      <span class="divider"></span>
+      <p class="eyebrow reveal">정결 · 거룩을 다루는 손</p>
+      <p class="lead reveal">이후 그들에게 맡겨진 일은 거룩한 것들을 다루는 일이었습니다.</p>
+      <blockquote class="verse reveal">
+        “지극히 거룩한 것들에 관하여…”
+        <span class="ref">민수기 4:4</span>
+      </blockquote>
+      <p class="para reveal">그들의 삶은 점점 하나님 중심으로 재편됩니다. 그러나 하나님과 함께하기 위해서는 반드시 거쳐야 할 과정이 있습니다.</p>
+      <blockquote class="verse reveal">
+        “진영을 더럽히지 않도록…”
+        <span class="ref">민수기 5:3</span>
+      </blockquote>
+      <p class="para reveal">정결이 요구됩니다. 더러움은 제거되어야 합니다. 하나님은 함께 거하시지만, 아무 상태로나 함께하지 않으십니다.</p>
+    </div>
+  </section>
+
+  <!-- SECTION 6: 헌신과 축복 -->
+  <section class="chapter" data-bg="212,168,92" data-bg2="188,138,68">
+    <div class="chapter-inner">
+      <span class="divider"></span>
+      <p class="eyebrow reveal">헌신 · 스스로 나아가다</p>
+      <p class="lead reveal">그리고 어떤 이들은 자발적으로 더 깊이 나아갑니다.</p>
+      <blockquote class="verse reveal">
+        “자신을 여호와에게로 분별하고자 할 때에는…”
+        <span class="ref">민수기 6:2</span>
+      </blockquote>
+      <p class="para reveal">이것이 헌신입니다. 강요가 아니라 선택입니다. 생명이 하나님을 향해 스스로 나아가기 시작합니다.</p>
+      <p class="lead reveal" style="margin-top:1.6rem;">그 끝에서 하나님은 축복하십니다.</p>
+      <blockquote class="verse reveal">
+        “여호와께서 그대에게 그분의 얼굴을 비추시고…”
+        <span class="ref">민수기 6:25</span>
+      </blockquote>
+      <p class="para reveal">하나님의 얼굴이 비추어진다는 것은 단순한 복이 아니라 관계의 회복, 곧 연합을 향한 초대입니다.</p>
+      <p class="para reveal">7장에 이르면 온 지파가 동일한 제물을 드립니다. 각기 다른 위치에 있던 그들이 하나의 마음으로 하나님께 나아옵니다. 공동체는 점점 하나로 묶입니다.</p>
+    </div>
+  </section>
+
+  <!-- SECTION 7: 전환점 - 드려짐 -->
+  <section class="chapter" data-bg="205,152,74" data-bg2="176,116,54">
+    <div class="chapter-inner">
+      <span class="divider"></span>
+      <p class="eyebrow reveal">전환점 · 드려짐</p>
+      <p class="para reveal">그리고 드디어, 한 전환점이 나타납니다.</p>
+      <blockquote class="verse reveal">
+        “너는 레위인들을… 여호와 앞에 요제물로 바쳐라.”
+        <span class="ref">민수기 8:11</span>
+      </blockquote>
+      <p class="para reveal">이전까지 사람은 제물을 드리는 존재였습니다. 그러나 이제 사람 자체가 하나님께 드려집니다.</p>
+      <blockquote class="verse reveal">
+        “레위인들은 나의 것이다.”
+        <span class="ref">민수기 8:14</span>
+      </blockquote>
+      <p class="para reveal">이것은 단순한 봉사의 임명이 아닙니다. 존재의 방향이 바뀌는 순간입니다. 사람은 더 이상 자기 자신을 위해 존재하지 않고, 하나님께 속한 존재가 됩니다.</p>
+      <p class="para reveal">이것이 과정의 완성입니다.</p>
+      <p class="lead reveal" style="text-align:center; margin:1.8rem 0;">정결 → 헌신 → 그리고 ‘드려짐’</p>
+      <p class="para reveal">이 과정을 통해 생명은 하나님께 실제로 속하게 됩니다.</p>
+    </div>
+  </section>
+
+  <!-- SECTION 8: 연합 -->
+  <section class="chapter" data-bg="185,150,120" data-bg2="140,120,128">
+    <div class="chapter-inner">
+      <span class="divider"></span>
+      <p class="eyebrow reveal">연합 · 같은 자리, 같은 음성</p>
+      <p class="para reveal">그리고 그 다음 장면에서, 마침내 그 결과가 나타납니다.</p>
+      <blockquote class="verse reveal">
+        “모세는… 증거궤 위에서 말씀하시는 소리를 들었다.”
+        <span class="ref">민수기 7:89</span>
+      </blockquote>
+      <p class="para reveal">하나님과 사람이 같은 공간 안에서, 같은 자리에서, 서로를 향하게 됩니다. 이것이 연합의 시작입니다.</p>
+    </div>
+  </section>
+
+  <!-- SECTION 9: 인도 -->
+  <section class="chapter" data-bg="150,140,150" data-bg2="95,120,142">
+    <div class="chapter-inner">
+      <span class="divider"></span>
+      <p class="eyebrow reveal">인도 · 함께 움직이다</p>
+      <p class="lead reveal">이제 그들은 움직입니다.</p>
+      <blockquote class="verse reveal">
+        “구름이 떠오르면 진군하고… 머물면 진을 쳤다.”
+        <span class="ref">민수기 9:17</span>
+      </blockquote>
+      <p class="para reveal">그들의 삶은 더 이상 자기 판단에 의해 움직이지 않습니다. 하나님과 함께 움직입니다.</p>
+      <p class="para reveal">이것이 인도이며, 동시에 연합의 실제 모습입니다.</p>
+    </div>
+  </section>
+
+  <!-- CLOSING -->
+  <section class="closing" data-bg="238,224,188" data-bg2="222,196,142">
+    <div class="closing-inner">
+      <svg class="seal reveal" width="64" height="64" viewBox="0 0 64 64">
+        <circle cx="32" cy="32" r="30" fill="none" stroke="#B0731C" stroke-width="1.4" opacity="0.7"></circle>
+        <circle cx="32" cy="32" r="6" fill="#D9A441"></circle>
+      </svg>
+      <p class="line1 reveal">이 모든 흐름은 하나로 모입니다.</p>
+      <p class="flow reveal">
+        하나님은 사람을 창조하시고,<br>
+        그 생명을 부르시며,<br>
+        선택하시고,<br>
+        질서 속에 두시고,<br>
+        정결하게 하시며,<br>
+        헌신으로 이끄시고,<br>
+        마침내 그 존재 자체를 하나님께 드려지게 하십니다.
+      </p>
+      <p class="flow reveal">
+        그리고 그 결과,<br>
+        하나님과 사람이 같은 중심을 바라보며<br>
+        같은 움직임 속에서 살아가게 하십니다.
+      </p>
+      <p class="culmination reveal">하나님의 궁극적인 경륜</p>
+      <p class="flow reveal">
+        사람이 하나님을 섬기는 데서 멈추지 않고,<br>
+        하나님께 속하여<br>
+        그분과 함께 움직이며<br>
+        그분의 음성을 듣는 존재가 되는 것—
+      </p>
+      <p class="final reveal">곧 하나님과 사람의 살아 있는 연합, 그것이 광야의 이야기 속에 숨겨진 가장 깊은 목적입니다.</p>
+    </div>
+  </section>
+
+  <footer>하나님의 영원한 경륜 시리즈 · 민수기 — 광야의 질서 · 1장 – 9장</footer>
+
+</div>
+
+<script>
+  // ---------- 스크롤 리빌 ----------
+  const revealEls = document.querySelectorAll('.reveal');
+  const revealObserver = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        entry.target.classList.add('visible');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, {threshold:0.12, rootMargin:'0px 0px -6% 0px'});
+  revealEls.forEach(el=> revealObserver.observe(el));
+  // fallback: 절대 영구히 숨겨지지 않도록
+  setTimeout(()=>{ revealEls.forEach(el=> el.classList.add('visible')); }, 2500);
+
+  // ---------- 캠프 다이어그램: 12지파 tick 생성 ----------
+  const ticksGroup = document.getElementById('ticks');
+  const cx=160, cy=160, rInner=44, rOuter=68;
+  for(let i=0;i<12;i++){
+    const angle = (Math.PI*2/12)*i - Math.PI/2;
+    const x1 = cx + rInner*Math.cos(angle);
+    const y1 = cy + rInner*Math.sin(angle);
+    const x2 = cx + rOuter*Math.cos(angle);
+    const y2 = cy + rOuter*Math.sin(angle);
+    const line = document.createElementNS('http://www.w3.org/2000/svg','line');
+    line.setAttribute('x1',x1); line.setAttribute('y1',y1);
+    line.setAttribute('x2',x2); line.setAttribute('y2',y2);
+    line.setAttribute('class','camp-tick');
+    line.style.transitionDelay = (i*0.05)+'s';
+    ticksGroup.appendChild(line);
+  }
+  const campWrap = document.getElementById('campDiagram');
+  const campObserver = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){ campWrap.classList.add('visible'); campObserver.unobserve(entry.target); }
+    });
+  }, {threshold:0.3});
+  campObserver.observe(campWrap);
+  setTimeout(()=> campWrap.classList.add('visible'), 3000);
+
+  // ---------- 배경색 스크롤 보간 ----------
+  const chapters = Array.from(document.querySelectorAll('[data-bg]'));
+  const stops = chapters.map(el=>{
+    const [r,g,b] = el.dataset.bg.split(',').map(Number);
+    const [r2,g2,b2] = el.dataset.bg2.split(',').map(Number);
+    return {el, top:[r,g,b], bottom:[r2,g2,b2]};
+  });
+  const root = document.documentElement;
+  let ticking=false;
+  function updateBg(){
+    ticking=false;
+    const vh = window.innerHeight;
+    const centerY = vh/2;
+    let best=null, bestDist=Infinity;
+    let second=null, secondDist=Infinity;
+    stops.forEach(s=>{
+      const rect = s.el.getBoundingClientRect();
+      const mid = rect.top + rect.height/2;
+      const dist = Math.abs(mid-centerY);
+      if(dist<bestDist){ second=best; secondDist=bestDist; best=s; bestDist=dist; }
+      else if(dist<secondDist){ second=s; secondDist=dist; }
+    });
+    if(!best) return;
+    let mix = best;
+    if(second){
+      const total = bestDist+secondDist;
+      const w = total===0 ? 1 : 1-(bestDist/total);
+      const blend=(a,b)=> a.map((v,i)=> Math.round(v*w + b[i]*(1-w)));
+      mix = {top: blend(best.top, second.top), bottom: blend(best.bottom, second.bottom)};
+    }
+    root.style.setProperty('--bg-r', mix.top[0]);
+    root.style.setProperty('--bg-g', mix.top[1]);
+    root.style.setProperty('--bg-b', mix.top[2]);
+    root.style.setProperty('--bg2-r', mix.bottom[0]);
+    root.style.setProperty('--bg2-g', mix.bottom[1]);
+    root.style.setProperty('--bg2-b', mix.bottom[2]);
+  }
+  window.addEventListener('scroll', ()=>{
+    if(!ticking){ requestAnimationFrame(updateBg); ticking=true; }
+  }, {passive:true});
+  updateBg();
+
+  // ---------- 먼지 입자 캔버스 (사막 빛 속 티끌) ----------
+  const canvas = document.getElementById('dust');
+  const ctx = canvas.getContext('2d');
+  let w,h,particles=[];
+  function resize(){
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+  }
+  function initParticles(){
+    const count = window.innerWidth<600 ? 26 : 46;
+    particles = Array.from({length:count}, ()=>({
+      x: Math.random()*w,
+      y: Math.random()*h,
+      r: 0.6+Math.random()*1.6,
+      speed: 0.12+Math.random()*0.28,
+      drift: (Math.random()-0.5)*0.18,
+      alpha: 0.15+Math.random()*0.35
+    }));
+  }
+  function animate(){
+    ctx.clearRect(0,0,w,h);
+    particles.forEach(p=>{
+      p.y -= p.speed;
+      p.x += p.drift;
+      if(p.y< -5){ p.y = h+5; p.x = Math.random()*w; }
+      if(p.x< -5) p.x = w+5;
+      if(p.x> w+5) p.x = -5;
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle = `rgba(217,164,65,${p.alpha})`;
+      ctx.fill();
+    });
+    requestAnimationFrame(animate);
+  }
+  resize(); initParticles(); animate();
+  window.addEventListener('resize', ()=>{ resize(); initParticles(); });
+</script>
+
+</body>
+</html>
