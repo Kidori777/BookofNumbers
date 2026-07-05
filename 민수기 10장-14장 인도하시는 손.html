@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>인도하시는 손, 흔들리는 마음 | 민수기 10장-14장</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@200;300;400;500;600;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-void:#080a12;
+    --bg-night:#0d1220;
+    --bg-night-2:#131a2e;
+    --brass:#c9a873;
+    --brass-dim:#8f7a52;
+    --ember:#c1502e;
+    --ember-deep:#5e2115;
+    --grape:#7a4a8c;
+    --grape-deep:#33203d;
+    --grape-glow:#a97fc0;
+    --stone:#948d78;
+    --dawn:#e8b25f;
+    --text-hi:#f3ede0;
+    --text-lo:#b8b2a1;
+    --line:rgba(243,237,224,0.14);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg-void);
+    color:var(--text-hi);
+    font-family:'Noto Serif KR',serif;
+    font-style:normal;
+    overflow-x:hidden;
+    line-height:1.9;
+  }
+  em, i, .never-italic{font-style:normal;}
+
+  ::selection{background:var(--brass);color:#0d1220;}
+
+  .section{
+    position:relative;
+    padding:min(14vw,150px) 6vw min(16vw,170px);
+    overflow:hidden;
+  }
+  canvas.atmosphere{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    display:block;
+    pointer-events:none;
+  }
+  .content{
+    position:relative;
+    z-index:2;
+    max-width:760px;
+    margin:0 auto;
+  }
+
+  .eyebrow{
+    display:flex;
+    align-items:center;
+    gap:16px;
+    font-size:13px;
+    letter-spacing:0.34em;
+    color:var(--brass);
+    font-weight:600;
+    margin-bottom:36px;
+    opacity:0;
+    transform:translateY(14px);
+    transition:opacity 1s ease, transform 1s ease;
+  }
+  .eyebrow::before{
+    content:'';
+    width:34px;height:1px;
+    background:var(--brass);
+    display:inline-block;
+  }
+  .eyebrow.visible{opacity:1;transform:translateY(0);}
+
+  h2.section-title{
+    font-size:clamp(28px,4.2vw,46px);
+    font-weight:700;
+    letter-spacing:-0.01em;
+    margin-bottom:52px;
+    opacity:0;
+    transform:translateY(18px);
+    transition:opacity 1.1s ease, transform 1.1s ease;
+  }
+  h2.section-title.visible{opacity:1;transform:translateY(0);}
+
+  blockquote{
+    font-size:clamp(19px,2.3vw,25px);
+    font-weight:500;
+    line-height:1.8;
+    padding:34px 0 34px 34px;
+    border-left:2px solid var(--brass-dim);
+    margin:44px 0;
+    color:var(--text-hi);
+    opacity:0;
+    transform:translateY(20px);
+    transition:opacity 1s ease, transform 1s ease;
+  }
+  blockquote.visible{opacity:1;transform:translateY(0);}
+
+  p.body-text{
+    font-size:clamp(16px,1.5vw,18px);
+    font-weight:300;
+    color:var(--text-lo);
+    margin:0 0 30px;
+    opacity:0;
+    transform:translateY(16px);
+    transition:opacity 0.9s ease, transform 0.9s ease;
+    white-space:pre-line;
+  }
+  p.body-text.visible{opacity:1;transform:translateY(0);}
+  p.body-text strong{color:var(--text-hi);font-weight:600;}
+
+  /* HERO */
+  .hero{
+    position:relative;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    background:radial-gradient(ellipse at 50% 20%, #1a2340 0%, var(--bg-void) 68%);
+    padding:8vw 6vw;
+  }
+  .hero-eyebrow{
+    font-size:13px;
+    letter-spacing:0.4em;
+    color:var(--brass);
+    font-weight:600;
+    margin-bottom:30px;
+    opacity:0;
+    animation:fadeUp 1.4s ease forwards 0.3s;
+  }
+  .hero-title{
+    font-size:clamp(40px,7.4vw,92px);
+    font-weight:900;
+    letter-spacing:-0.015em;
+    line-height:1.18;
+    background:linear-gradient(180deg,#fbf3df 0%, var(--brass) 60%, var(--brass-dim) 100%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    opacity:0;
+    animation:fadeUp 1.6s ease forwards 0.6s;
+  }
+  .hero-sub{
+    margin-top:28px;
+    font-size:clamp(16px,1.8vw,20px);
+    font-weight:300;
+    color:var(--text-lo);
+    letter-spacing:0.02em;
+    opacity:0;
+    animation:fadeUp 1.6s ease forwards 1s;
+  }
+  .hero-range{
+    margin-top:44px;
+    font-size:14px;
+    letter-spacing:0.3em;
+    color:var(--stone);
+    font-weight:500;
+    opacity:0;
+    animation:fadeUp 1.6s ease forwards 1.4s;
+  }
+  @keyframes fadeUp{
+    from{opacity:0;transform:translateY(24px);}
+    to{opacity:1;transform:translateY(0);}
+  }
+  .scroll-cue{
+    position:absolute;
+    bottom:44px;
+    left:50%;
+    transform:translateX(-50%);
+    width:1px;height:64px;
+    background:linear-gradient(var(--brass),transparent);
+    opacity:0;
+    animation:fadeUp 1.6s ease forwards 2s;
+  }
+  .scroll-cue::after{
+    content:'';
+    position:absolute;
+    top:0;left:-2px;
+    width:5px;height:5px;
+    border-radius:50%;
+    background:var(--brass);
+    animation:cueMove 2.4s ease-in-out infinite;
+  }
+  @keyframes cueMove{
+    0%{top:0;opacity:1;}
+    90%{opacity:0;}
+    100%{top:60px;opacity:0;}
+  }
+
+  /* section theme backgrounds */
+  .s-call{background:linear-gradient(180deg,var(--bg-void) 0%,var(--bg-night) 100%);}
+  .s-cloud{background:linear-gradient(180deg,var(--bg-night) 0%,var(--bg-night-2) 100%);}
+  .s-complaint{background:linear-gradient(180deg,var(--bg-night-2) 0%,#20130f 100%);}
+  .s-complaint blockquote{border-left-color:var(--ember);}
+  .s-spirit{background:linear-gradient(180deg,#20130f 0%,#241a10 100%);}
+  .s-spirit blockquote{border-left-color:var(--dawn);}
+  .s-jealousy{background:linear-gradient(180deg,#241a10 0%,#1a1620 100%);}
+  .s-jealousy blockquote{border-left-color:var(--stone);}
+  .s-spies{background:linear-gradient(180deg,#1a1620 0%,var(--grape-deep) 100%);}
+  .s-spies blockquote{border-left-color:var(--grape-glow);}
+  .s-judgment{background:linear-gradient(180deg,var(--grape-deep) 0%,#210f14 55%,#160a0d 100%);}
+  .s-judgment blockquote{border-left-color:var(--ember);}
+  .s-presence{background:linear-gradient(180deg,#160a0d 0%,#0d0a12 100%);}
+  .s-presence blockquote{border-left-color:var(--brass);}
+  .s-closing{
+    background:linear-gradient(180deg,#0d0a12 0%, var(--bg-void) 40%, #0a0e18 100%);
+    text-align:center;
+  }
+
+  .closing-title{
+    font-size:clamp(26px,3.6vw,38px);
+    font-weight:700;
+    margin-bottom:40px;
+    color:var(--brass);
+    opacity:0;transform:translateY(16px);
+    transition:opacity 1s ease, transform 1s ease;
+  }
+  .closing-title.visible{opacity:1;transform:translateY(0);}
+  .closing-line{
+    font-size:clamp(18px,2vw,22px);
+    font-weight:400;
+    color:var(--text-hi);
+    margin:14px 0;
+    opacity:0;transform:translateY(14px);
+    transition:opacity 1s ease, transform 1s ease;
+  }
+  .closing-line.visible{opacity:1;transform:translateY(0);}
+  .final-word{
+    margin-top:56px;
+    font-size:clamp(22px,2.6vw,28px);
+    font-weight:700;
+    color:var(--brass);
+    letter-spacing:0.01em;
+    opacity:0;transform:translateY(14px);
+    transition:opacity 1.2s ease, transform 1.2s ease;
+  }
+  .final-word.visible{opacity:1;transform:translateY(0);}
+
+  .footer-mark{
+    text-align:center;
+    padding:60px 6vw 80px;
+    font-size:12px;
+    letter-spacing:0.28em;
+    color:var(--stone);
+    background:var(--bg-void);
+  }
+
+  @media (max-width:640px){
+    .section{padding:100px 6vw 110px;}
+    blockquote{padding:24px 0 24px 22px;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.01ms !important; transition-duration:0.01ms !important;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <canvas id="hero-canvas" class="atmosphere"></canvas>
+  <div style="position:relative;z-index:2;">
+    <div class="hero-eyebrow">하나님의 영원한 경륜 시리즈</div>
+    <h1 class="hero-title">인도하시는 손,<br>흔들리는 마음</h1>
+    <p class="hero-sub">나팔이 울리고, 구름이 움직이고, 사람은 흔들린다</p>
+    <div class="hero-range">민 수 기&nbsp; 10 장 — 14 장</div>
+  </div>
+  <div class="scroll-cue"></div>
+</section>
+
+<!-- ============ 1. 나팔 ============ -->
+<section class="section s-call">
+  <canvas class="atmosphere" data-theme="brass"></canvas>
+  <div class="content">
+    <div class="eyebrow">나팔 — 부르심의 소리</div>
+    <h2 class="section-title">흩어진 자들을 부르는 음성</h2>
+
+    <blockquote>“여호와께서 모세에게 말씀하셨다. ‘너는 은으로 나팔 두 개를 만들되… 그것들을 사용하여 회중을 소집하거나 진영을 진군시켜야 한다.’” (민수기 10:1-2)</blockquote>
+
+    <p class="body-text">광야의 고요를 가르며 울려 퍼질 이 나팔 소리는 단순한 신호가 아니었습니다. 그것은 흩어진 자들을 부르는 하나님의 음성이었고, 멈춘 자들을 움직이게 하는 하나님의 손길이었습니다. 창조의 처음, 혼돈 속에서 “빛이 있으라” 하시며 질서를 세우셨던 하나님께서, 이제 광야라는 또 다른 무질서 속에서도 동일하게 질서를 세워 가고 계십니다. 사람은 스스로 길을 만들 수 없기에, 하나님은 부르심으로 그들을 이끄십니다.</p>
+
+    <blockquote>“두 나팔을 불면 온 회중은… 모여야 한다.” (민 10:3)</blockquote>
+
+    <p class="body-text">이 부르심에는 하나님의 의도가 담겨 있습니다. 인간은 타락 이후 흩어지는 존재가 되었지만, 하나님은 다시 모으십니다. 창조에서 시작된 생명은 선택을 통해 구별되고, 이제는 부르심을 통해 공동체로 세워집니다. 이 모임은 강요가 아니라 응답입니다. 나팔 소리를 듣고 반응하는 자들만이 하나님의 흐름 안으로 들어옵니다.</p>
+
+    <blockquote>“너희를 억압하는 대적과 싸우러 나갈 때에 나팔로 경보를 울려라… 그러면 여호와 너희 하나님이 너희를 기억하고 너희를 원수들에게서 구원할 것이다.” (민 10:9)</blockquote>
+
+    <p class="body-text">여기서 ‘기억하신다’는 것은 단순한 회상이 아닙니다. 히브리어 ‘자카르(זָכַר)’는 언약에 따라 실제로 개입하시는 하나님의 행동을 의미합니다. 하나님은 창조하신 생명을 끝까지 책임지시는 분이십니다. 그 생명은 이제 보호와 구원의 역사 속으로 들어갑니다.</p>
+  </div>
+</section>
+
+<!-- ============ 2. 구름의 인도 ============ -->
+<section class="section s-cloud">
+  <canvas class="atmosphere" data-theme="cloud"></canvas>
+  <div class="content">
+    <div class="eyebrow">구름 — 인도하시는 임재</div>
+    <h2 class="section-title">멈춤에서 진군으로</h2>
+
+    <p class="body-text">마침내 나팔은 ‘움직임’을 불러옵니다.</p>
+
+    <blockquote>“둘째 해 둘째 달… 구름이 성막 위로 떠올랐다.” (민 10:11)</blockquote>
+
+    <p class="body-text">이제 백성은 멈춤에서 진군으로 나아갑니다. “그들은 여호와께서 모세를 통해 하신 명령에 따라… 진군하였다” (민 10:13). 이것은 선택된 백성이 ‘인도’를 배우는 장면입니다. 그들은 스스로 길을 정하지 않습니다. 구름이 움직이면 움직이고, 머물면 머뭅니다. 인도란 방향이 아니라 관계이며, 하나님의 움직임에 자신을 맞추는 생명의 방식입니다.</p>
+
+    <p class="body-text">그러나 이 인도 속에서도 인간의 본성은 흔들립니다.</p>
+
+    <blockquote>“우리를 떠나지 마십시오… 우리의 눈이 되어 주십시오.” (민 10:31)</blockquote>
+
+    <p class="body-text">보이지 않는 하나님보다 보이는 사람을 의지하려는 마음이 드러납니다. 그러나 이미 하나님은 앞서 가고 계셨습니다.</p>
+
+    <blockquote>“여호와의 언약궤가… 그들 앞에서 나아가며 그들을 위하여 쉴 곳을 찾았다.” (민 10:33)</blockquote>
+
+    <p class="body-text">하나님은 단순히 길을 알려주시는 분이 아니라, 먼저 가셔서 쉴 곳을 예비하시는 분입니다. 창조 때 사람을 위해 거처를 준비하셨던 것처럼, 광야에서도 동일하게 역사하십니다. 인도는 결국 생명이 머물 수 있는 자리로 이끄는 과정입니다.</p>
+  </div>
+</section>
+
+<!-- ============ 3. 불평 ============ -->
+<section class="section s-complaint">
+  <canvas class="atmosphere" data-theme="ember"></canvas>
+  <div class="content">
+    <div class="eyebrow">불평 — 흔들리는 마음</div>
+    <h2 class="section-title">과정에 대한 거부</h2>
+
+    <p class="body-text">그러나 그 과정 속에서 인간은 쉽게 무너집니다.</p>
+
+    <blockquote>“백성은… 불평하는 사람들처럼 되었다.” (민 11:1)</blockquote>
+
+    <p class="body-text">불평은 상황에 대한 반응이 아니라 하나님의 과정에 대한 거부입니다. 그들은 과거를 그리워합니다.</p>
+
+    <blockquote>“우리가 이집트에 있었을 때가 좋았다…” (민 11:18)</blockquote>
+
+    <p class="body-text">구원받았지만 아직 자유를 감당하지 못하는 모습입니다. 하나님은 만나로 생명을 유지하게 하셨지만, 사람은 욕망을 선택합니다. 생명보다 자극을 선택할 때, 그 길은 결국 죽음으로 향합니다.</p>
+  </div>
+</section>
+
+<!-- ============ 4. 영의 나눔 ============ -->
+<section class="section s-spirit">
+  <canvas class="atmosphere" data-theme="light"></canvas>
+  <div class="content">
+    <div class="eyebrow">영 — 나누어지는 은혜</div>
+    <h2 class="section-title">한 사람에서 공동체로</h2>
+
+    <p class="body-text">그럼에도 하나님은 멈추지 않으십니다.</p>
+
+    <blockquote>“나는 네 위에 임한 영의 일부를 그들 위에도 임하게 하겠다.” (민 11:17)</blockquote>
+
+    <p class="body-text">하나님은 짐을 나누실 뿐 아니라, 영을 나누십니다. 한 사람에게 머물던 것이 공동체로 확장됩니다. 이것은 하나님의 방향을 보여 줍니다.</p>
+
+    <blockquote>“나는 여호와의 모든 백성이 신언자였으면 좋겠다.” (민 11:29)</blockquote>
+
+    <p class="body-text">하나님은 특정한 사람만이 아니라, 모든 사람이 그분과 연결되기를 원하십니다. 이것이 연합을 향한 움직임입니다.</p>
+  </div>
+</section>
+
+<!-- ============ 5. 질투 ============ -->
+<section class="section s-jealousy">
+  <canvas class="atmosphere" data-theme="dust"></canvas>
+  <div class="content">
+    <div class="eyebrow">질투 — 비교와 친밀함</div>
+    <h2 class="section-title">기능이 아니라 친밀함</h2>
+
+    <p class="body-text">그러나 공동체 안에는 또 다른 문제가 드러납니다.</p>
+
+    <blockquote>“여호와께서 참으로 모세를 통해서만 말씀하셨느냐?” (민 12:2)</blockquote>
+
+    <p class="body-text">비교와 질투가 생겨납니다. 하나님은 말씀하십니다.</p>
+
+    <blockquote>“그와는 내가 얼굴을 마주 대하여 말한다.” (민 12:8)</blockquote>
+
+    <p class="body-text">하나님과의 관계는 기능이 아니라 친밀함입니다. 이 친밀함은 인간의 노력 이전에 하나님의 선택에서 시작됩니다.</p>
+  </div>
+</section>
+
+<!-- ============ 6. 정탐꾼 ============ -->
+<section class="section s-spies">
+  <canvas class="atmosphere" data-theme="grape"></canvas>
+  <div class="content">
+    <div class="eyebrow">정탐 — 약속의 땅 앞에서</div>
+    <h2 class="section-title">보이는 것과 신뢰하는 것</h2>
+
+    <p class="body-text">이제 여정은 중요한 전환점에 이릅니다.</p>
+
+    <blockquote>“내가 이스라엘 자손에게 주는 가나안 땅을 정탐하게 하여라.” (민 13:2)</blockquote>
+
+    <p class="body-text">약속이 눈앞에 다가옵니다. 그러나 사람들은 보이는 것에 흔들립니다.</p>
+
+    <blockquote>“우리는… 메뚜기 같았다.” (민 13:33)</blockquote>
+
+    <p class="body-text">현실이 약속보다 크게 보입니다. 그러나 갈렙과 여호수아는 말합니다.</p>
+
+    <blockquote>“여호와께서 우리를 기뻐하시면… 그 땅을 주실 것이다.” (민 14:8)</blockquote>
+
+    <p class="body-text">믿음은 상황을 부정하는 것이 아니라 하나님의 의도를 신뢰하는 것입니다. 그러나 백성은 두려움을 선택합니다.</p>
+
+    <blockquote>“차라리 우리가 이집트로 돌아가자.” (민 14:4)</blockquote>
+
+    <p class="body-text">자유보다 익숙한 종살이를 택하는 인간의 모습입니다.</p>
+  </div>
+</section>
+
+<!-- ============ 7. 심판과 소망 ============ -->
+<section class="section s-judgment">
+  <canvas class="atmosphere" data-theme="ember-deep"></canvas>
+  <div class="content">
+    <div class="eyebrow">심판과 소망 — 실패 너머의 계획</div>
+    <h2 class="section-title">멈추지 않는 계획</h2>
+
+    <p class="body-text">그 결과 하나님은 말씀하십니다.</p>
+
+    <blockquote>“그들은… 그 땅을 보지 못할 것이다.” (민 14:23)</blockquote>
+
+    <p class="body-text">그러나 동시에 새로운 길이 열립니다.</p>
+
+    <blockquote>“너희의 어린것들은 내가 이끌고 들어갈 것이다.” (민 14:31)</blockquote>
+
+    <p class="body-text">인간의 실패가 하나님의 계획을 멈추게 하지 못합니다. 광야의 긴 시간은 버려진 시간이 아니라 준비되는 시간입니다. 과정은 길어지지만 목적은 변하지 않습니다.</p>
+  </div>
+</section>
+
+<!-- ============ 8. 임재 ============ -->
+<section class="section s-presence">
+  <canvas class="atmosphere" data-theme="brass-dim"></canvas>
+  <div class="content">
+    <div class="eyebrow">임재 — 모든 것의 기준</div>
+    <h2 class="section-title">임재 안에서만 의미를 가진다</h2>
+
+    <p class="body-text">마지막으로 인간은 다시 조급함을 드러냅니다.</p>
+
+    <blockquote>“이제 우리는 올라가겠습니다.” (민 14:40)</blockquote>
+
+    <p class="body-text">그러나 하나님 없이 나아간 길은 실패로 끝납니다.</p>
+
+    <blockquote>“여호와께서 여러분 가운데에 계시지 않으니…” (민 14:42)</blockquote>
+
+    <p class="body-text">이 한 문장은 모든 흐름을 드러냅니다. 창조에서 시작된 생명, 선택된 백성, 인도하심, 그리고 광야의 과정—이 모든 것은 하나님의 임재 안에서만 의미를 가집니다.</p>
+  </div>
+</section>
+
+<!-- ============ 결론 ============ -->
+<section class="section s-closing">
+  <canvas class="atmosphere" data-theme="dawn"></canvas>
+  <div class="content">
+    <p class="body-text" style="text-align:center;">이렇게 이야기는 점차 분명해집니다.</p>
+
+    <p class="closing-title">하나님의 경륜</p>
+
+    <p class="body-text" style="text-align:center;max-width:640px;margin-left:auto;margin-right:auto;">하나님은 사람을 창조하시고, 생명을 주시며, 선택하시고, 인도하시며, 과정을 통과하게 하신 후, 마침내 그분 자신과의 연합으로 이끄십니다. 광야는 단순한 통과가 아니라, 하나님과 함께 걷는 법을 배우는 자리였습니다.</p>
+
+    <p class="closing-line">결국 하나님께서 이루고자 하시는 것은 한 장소가 아니라 한 무리의 사람들입니다.</p>
+
+    <p class="closing-line">그분의 음성에 반응하고,<br>그분의 인도를 따르며,<br>그분의 임재 안에서 살아가는 백성.</p>
+
+    <p class="final-word">이것이 창조에서 시작되어 광야를 지나 완성으로 나아가는 하나님의 경륜입니다.</p>
+  </div>
+</section>
+
+<div class="footer-mark">하나님의 영원한 경륜 시리즈 · 민수기 10 – 14 장</div>
+
+<script>
+/* ---------- Scroll Reveal ---------- */
+const revealEls = document.querySelectorAll('.eyebrow, .section-title, blockquote, .body-text, .closing-title, .closing-line, .final-word');
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.classList.add('visible');
+    }
+  });
+},{threshold:0.15, rootMargin:'0px 0px -8% 0px'});
+revealEls.forEach((el,i)=>{
+  el.style.transitionDelay = (i%4)*0.06 + 's';
+  io.observe(el);
+});
+
+/* ---------- Canvas Atmosphere Engine ---------- */
+const themeColors = {
+  'brass':      {base:[201,168,115], glow:'rgba(201,168,115,0.55)'},
+  'brass-dim':  {base:[143,122,82],  glow:'rgba(143,122,82,0.4)'},
+  'cloud':      {base:[220,224,240], glow:'rgba(220,224,240,0.35)'},
+  'ember':      {base:[193,80,46],   glow:'rgba(193,80,46,0.55)'},
+  'ember-deep': {base:[122,42,26],   glow:'rgba(122,42,26,0.55)'},
+  'light':      {base:[232,178,95],  glow:'rgba(232,178,95,0.6)'},
+  'dust':       {base:[148,141,120], glow:'rgba(148,141,120,0.4)'},
+  'grape':      {base:[169,127,192], glow:'rgba(169,127,192,0.5)'},
+  'dawn':       {base:[232,178,95],  glow:'rgba(232,178,95,0.45)'}
+};
+
+function setupCanvas(canvas){
+  const ctx = canvas.getContext('2d');
+  let w, h, dpr;
+  let particles = [];
+  const theme = canvas.dataset.theme || 'brass';
+  const colorInfo = themeColors[theme] || themeColors['brass'];
+  const isEmber = theme.indexOf('ember') === 0;
+  const isCloud = theme === 'cloud';
+  const isLight = theme === 'light' || theme === 'dawn';
+  const isGrape = theme === 'grape';
+  let running = false;
+  let rafId = null;
+
+  function resize(){
+    const rect = canvas.parentElement.getBoundingClientRect();
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    w = canvas.width = Math.floor(rect.width * dpr);
+    h = canvas.height = Math.floor(rect.height * dpr);
+    canvas.style.width = rect.width + 'px';
+    canvas.style.height = rect.height + 'px';
+    buildParticles(rect.width, rect.height);
+  }
+
+  function buildParticles(cw, ch){
+    const count = isCloud ? 26 : (isGrape ? 20 : 40);
+    particles = [];
+    for(let i=0;i<count;i++){
+      if(isCloud){
+        particles.push({
+          x: Math.random()*cw*dpr,
+          y: Math.random()*ch*0.7*dpr,
+          r: (40 + Math.random()*90)*dpr,
+          vx: (0.06 + Math.random()*0.10)*dpr,
+          o: 0.03 + Math.random()*0.05
+        });
+      } else if(isGrape){
+        particles.push({
+          x: Math.random()*cw*dpr,
+          y: ch*dpr*0.15 + Math.random()*ch*dpr*0.7,
+          r: (2 + Math.random()*3)*dpr,
+          vy: (0.05 + Math.random()*0.08)*dpr,
+          phase: Math.random()*Math.PI*2,
+          o: 0.2 + Math.random()*0.4
+        });
+      } else if(isLight){
+        particles.push({
+          x: Math.random()*cw*dpr,
+          y: Math.random()*ch*dpr,
+          r: (1 + Math.random()*2)*dpr,
+          vy: -(0.10 + Math.random()*0.18)*dpr,
+          phase: Math.random()*Math.PI*2,
+          o: 0.15 + Math.random()*0.5
+        });
+      } else if(isEmber){
+        particles.push({
+          x: Math.random()*cw*dpr,
+          y: ch*dpr*0.4 + Math.random()*ch*dpr*0.6,
+          r: (1.2 + Math.random()*2.4)*dpr,
+          vy: -(0.15 + Math.random()*0.35)*dpr,
+          vx: (Math.random()-0.5)*0.12*dpr,
+          phase: Math.random()*Math.PI*2,
+          o: 0.3 + Math.random()*0.55
+        });
+      } else {
+        particles.push({
+          x: Math.random()*cw*dpr,
+          y: Math.random()*ch*dpr,
+          r: (0.8 + Math.random()*1.6)*dpr,
+          vy: (Math.random()-0.5)*0.06*dpr,
+          vx: (Math.random()-0.5)*0.06*dpr,
+          phase: Math.random()*Math.PI*2,
+          o: 0.15 + Math.random()*0.3
+        });
+      }
+    }
+  }
+
+  let t = 0;
+  function draw(){
+    t += 1;
+    ctx.clearRect(0,0,w,h);
+    const [r,g,b] = colorInfo.base;
+
+    particles.forEach(p=>{
+      if(isCloud){
+        p.x += p.vx;
+        if(p.x - p.r > w) p.x = -p.r;
+        const grd = ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r);
+        grd.addColorStop(0, `rgba(${r},${g},${b},${p.o})`);
+        grd.addColorStop(1, `rgba(${r},${g},${b},0)`);
+        ctx.fillStyle = grd;
+        ctx.beginPath();
+        ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+        ctx.fill();
+      } else if(isEmber){
+        p.y += p.vy;
+        p.x += p.vx + Math.sin(t*0.02+p.phase)*0.15*dpr;
+        if(p.y < -10) { p.y = h + 10; p.x = Math.random()*w; }
+        const flicker = 0.5 + 0.5*Math.sin(t*0.08+p.phase);
+        ctx.fillStyle = `rgba(${r},${g+Math.floor(flicker*30)},${b},${p.o*flicker})`;
+        ctx.beginPath();
+        ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+        ctx.fill();
+      } else if(isLight){
+        p.y += p.vy;
+        p.x += Math.sin(t*0.015+p.phase)*0.2*dpr;
+        if(p.y < -10) { p.y = h + 10; p.x = Math.random()*w; }
+        const flicker = 0.4 + 0.6*Math.sin(t*0.05+p.phase);
+        ctx.fillStyle = `rgba(${r},${g},${b},${p.o*flicker})`;
+        ctx.beginPath();
+        ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+        ctx.fill();
+      } else if(isGrape){
+        p.y += p.vy;
+        if(p.y - p.r > h) p.y = -p.r;
+        const shimmer = 0.5 + 0.5*Math.sin(t*0.03+p.phase);
+        ctx.fillStyle = `rgba(${r},${g},${b},${p.o*shimmer})`;
+        ctx.beginPath();
+        ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+        ctx.fill();
+      } else {
+        p.x += p.vx; p.y += p.vy;
+        if(p.x<0) p.x=w; if(p.x>w) p.x=0;
+        if(p.y<0) p.y=h; if(p.y>h) p.y=0;
+        const shimmer = 0.5 + 0.5*Math.sin(t*0.02+p.phase);
+        ctx.fillStyle = `rgba(${r},${g},${b},${p.o*shimmer})`;
+        ctx.beginPath();
+        ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+        ctx.fill();
+      }
+    });
+
+    if(running) rafId = requestAnimationFrame(draw);
+  }
+
+  resize();
+  window.addEventListener('resize', resize);
+
+  const sectionIO = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting && !running){
+        running = true;
+        draw();
+      } else if(!e.isIntersecting && running){
+        running = false;
+        cancelAnimationFrame(rafId);
+      }
+    });
+  },{threshold:0.05});
+  sectionIO.observe(canvas.parentElement);
+}
+
+document.querySelectorAll('canvas.atmosphere[data-theme]').forEach(setupCanvas);
+
+/* ---------- Hero Canvas: Cloud by day, Fire by night pillar ---------- */
+(function(){
+  const canvas = document.getElementById('hero-canvas');
+  const ctx = canvas.getContext('2d');
+  let w,h,dpr;
+  function resize(){
+    dpr = Math.min(window.devicePixelRatio||1,2);
+    const rect = canvas.parentElement.getBoundingClientRect();
+    w = canvas.width = Math.floor(rect.width*dpr);
+    h = canvas.height = Math.floor(rect.height*dpr);
+    canvas.style.width = rect.width+'px';
+    canvas.style.height = rect.height+'px';
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const stars = [];
+  for(let i=0;i<90;i++){
+    stars.push({
+      x:Math.random(), y:Math.random()*0.6,
+      r:Math.random()*1.4+0.3,
+      phase:Math.random()*Math.PI*2
+    });
+  }
+
+  const pillarParticles = [];
+  for(let i=0;i<70;i++){
+    pillarParticles.push({
+      a: Math.random()*Math.PI*2,
+      radius: Math.random()*1,
+      yOff: Math.random(),
+      speed: 0.2+Math.random()*0.4,
+      size: 1+Math.random()*2.4
+    });
+  }
+
+  let t=0;
+  function draw(){
+    t+=1;
+    ctx.clearRect(0,0,w,h);
+
+    // stars
+    stars.forEach(s=>{
+      const tw = 0.4+0.6*Math.sin(t*0.02+s.phase);
+      ctx.fillStyle = `rgba(230,225,210,${0.5*tw})`;
+      ctx.beginPath();
+      ctx.arc(s.x*w, s.y*h, s.r*dpr, 0, Math.PI*2);
+      ctx.fill();
+    });
+
+    // central pillar of cloud/fire
+    const cx = w*0.5;
+    const baseY = h*0.62;
+    const topY = h*0.18;
+
+    pillarParticles.forEach(p=>{
+      p.a += 0.004*p.speed;
+      const yProg = (t*0.0016*p.speed + p.yOff) % 1;
+      const y = baseY - yProg*(baseY-topY);
+      const spread = (0.05 + 0.10*yProg) * w;
+      const x = cx + Math.cos(p.a)*spread*p.radius;
+      const isFireZone = yProg < 0.4;
+      const flick = 0.5+0.5*Math.sin(t*0.06+p.a);
+      let color;
+      if(isFireZone){
+        color = `rgba(${201-40*flick},${150-40*flick},90,${0.5*(1-yProg)+0.1})`;
+      } else {
+        color = `rgba(220,224,240,${0.30*(1-yProg)})`;
+      }
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.arc(x, y, p.size*dpr*(1.4-yProg*0.6), 0, Math.PI*2);
+      ctx.fill();
+    });
+
+    rafId = requestAnimationFrame(draw);
+  }
+  let rafId = requestAnimationFrame(draw);
+})();
+</script>
+</body>
+</html>

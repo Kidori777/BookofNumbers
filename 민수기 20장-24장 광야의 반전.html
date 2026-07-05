@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>광야의 반전 — 민수기 20-24장</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@200;300;400;500;600;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-void:#12100e;
+    --bg-dust:#1c1712;
+    --bg-thirst:#211a12;
+    --bg-rock:#181410;
+    --bg-fire:#1f120c;
+    --bg-bronze:#170f0c;
+    --bg-water:#0c1618;
+    --bg-war:#170e0c;
+    --bg-star:#0a0a14;
+
+    --c-parchment:#e9ddc4;
+    --c-parchment-dim:#b9ac91;
+    --c-bronze:#c17a3d;
+    --c-bronze-glow:#e0975a;
+    --c-clay:#8a5a3a;
+    --c-water:#5c93a0;
+    --c-water-glow:#9fd4e0;
+    --c-blood:#9c3b2b;
+    --c-gold:#d4af5f;
+    --c-gold-bright:#f2d896;
+    --c-ash:#6b6155;
+    --c-indigo:#4a4470;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+
+  html{scroll-behavior:smooth;}
+
+  body{
+    font-family:'Noto Serif KR', serif;
+    font-style:normal;
+    background:var(--bg-void);
+    color:var(--c-parchment);
+    overflow-x:hidden;
+    line-height:1.9;
+  }
+
+  i, em, .italic{font-style:normal !important;}
+
+  section{
+    position:relative;
+    width:100%;
+    min-height:100vh;
+    padding:8vh 6vw;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    overflow:hidden;
+  }
+
+  canvas.bg-canvas{
+    position:absolute;
+    top:0;left:0;
+    width:100%;height:100%;
+    z-index:0;
+    pointer-events:none;
+  }
+
+  .content{
+    position:relative;
+    z-index:2;
+    max-width:760px;
+    width:100%;
+  }
+
+  .reveal{
+    opacity:0;
+    transform:translateY(28px);
+    transition:opacity 1.1s ease, transform 1.1s ease;
+  }
+  .reveal.in{
+    opacity:1;
+    transform:translateY(0);
+  }
+
+  .eyebrow{
+    font-size:0.78rem;
+    letter-spacing:0.35em;
+    color:var(--c-parchment-dim);
+    text-transform:uppercase;
+    margin-bottom:1.4rem;
+    font-weight:300;
+  }
+
+  .verse{
+    font-size:1.02rem;
+    color:var(--c-gold);
+    font-weight:500;
+    line-height:1.85;
+    padding:1.6rem 1.8rem;
+    border-left:2px solid var(--c-gold);
+    background:rgba(212,175,95,0.05);
+    margin:1.8rem 0;
+  }
+
+  .verse.bronze{color:var(--c-bronze-glow);border-color:var(--c-bronze-glow);background:rgba(224,151,90,0.06);}
+  .verse.water{color:var(--c-water-glow);border-color:var(--c-water-glow);background:rgba(159,212,224,0.06);}
+  .verse.blood{color:#e08a6f;border-color:var(--c-blood);background:rgba(156,59,43,0.08);}
+  .verse.ash{color:var(--c-parchment-dim);border-color:var(--c-ash);background:rgba(107,97,85,0.06);}
+
+  p.body-text{
+    font-size:1.08rem;
+    font-weight:300;
+    color:var(--c-parchment);
+    letter-spacing:0.01em;
+    margin-bottom:1.5rem;
+  }
+
+  h2.scene-title{
+    font-size:2.1rem;
+    font-weight:700;
+    margin-bottom:1.6rem;
+    letter-spacing:-0.01em;
+  }
+
+  /* HERO */
+  .hero{
+    background:radial-gradient(ellipse at 50% 30%, #221c14 0%, var(--bg-void) 70%);
+    text-align:center;
+  }
+  .hero .kor-title{
+    font-size:clamp(2.6rem, 7vw, 5rem);
+    font-weight:900;
+    letter-spacing:-0.02em;
+    background:linear-gradient(180deg, var(--c-gold-bright) 0%, var(--c-bronze) 60%, var(--c-clay) 100%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    line-height:1.15;
+    margin-bottom:1.2rem;
+  }
+  .hero .sub-title{
+    font-size:1.1rem;
+    color:var(--c-parchment-dim);
+    letter-spacing:0.08em;
+    font-weight:300;
+    margin-bottom:2.5rem;
+  }
+  .hero .ref-range{
+    font-size:0.85rem;
+    letter-spacing:0.3em;
+    color:var(--c-bronze-glow);
+    text-transform:uppercase;
+  }
+  .scroll-cue{
+    position:absolute;
+    bottom:6vh;
+    left:50%;
+    transform:translateX(-50%);
+    width:1px;height:60px;
+    background:linear-gradient(180deg, transparent, var(--c-parchment-dim));
+    z-index:2;
+  }
+  .scroll-cue::after{
+    content:'';
+    position:absolute;
+    top:0;left:-3px;
+    width:7px;height:7px;
+    border-radius:50%;
+    background:var(--c-gold);
+    animation:cue-move 2.2s ease-in-out infinite;
+  }
+  @keyframes cue-move{
+    0%{top:0;opacity:1;}
+    90%{opacity:0.2;}
+    100%{top:56px;opacity:0;}
+  }
+
+  /* DIVIDER numbering as scene marker */
+  .scene-mark{
+    font-size:0.75rem;
+    letter-spacing:0.3em;
+    color:var(--c-ash);
+    margin-bottom:0.8rem;
+    text-transform:uppercase;
+  }
+
+  /* Rock split panel */
+  .rock-split{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:1.5rem;
+    margin:2rem 0;
+  }
+  .rock-panel{
+    padding:1.5rem;
+    border-radius:2px;
+  }
+  .rock-panel.command{
+    background:rgba(212,175,95,0.06);
+    border:1px solid rgba(212,175,95,0.25);
+  }
+  .rock-panel.strike{
+    background:rgba(107,97,85,0.08);
+    border:1px solid rgba(107,97,85,0.3);
+  }
+  .rock-panel h3{
+    font-size:0.85rem;
+    letter-spacing:0.15em;
+    margin-bottom:0.8rem;
+    font-weight:500;
+  }
+  .rock-panel.command h3{color:var(--c-gold);}
+  .rock-panel.strike h3{color:var(--c-ash);}
+  .rock-panel p{font-size:0.95rem;font-weight:300;color:var(--c-parchment-dim);}
+
+  @media(max-width:640px){
+    .rock-split{grid-template-columns:1fr;}
+    .hero .kor-title{font-size:2.4rem;}
+  }
+
+  /* Finale */
+  .finale{
+    background:radial-gradient(ellipse at 50% 40%, #171638 0%, var(--bg-star) 75%);
+    text-align:center;
+  }
+  .finale .star-verse{
+    font-size:clamp(1.4rem, 3vw, 1.9rem);
+    font-weight:600;
+    color:var(--c-gold-bright);
+    margin:2rem 0;
+    line-height:1.7;
+  }
+  .finale .closing{
+    font-size:1.02rem;
+    font-weight:300;
+    color:var(--c-parchment-dim);
+    margin-top:2rem;
+  }
+  .finale .closing strong{
+    display:block;
+    color:var(--c-gold);
+    font-weight:500;
+    font-size:1.3rem;
+    margin-top:2.2rem;
+    letter-spacing:0.02em;
+  }
+
+  .conclusion-list{
+    margin:2rem 0;
+    padding-left:0;
+    list-style:none;
+  }
+  .conclusion-list li{
+    font-size:1.05rem;
+    font-weight:300;
+    color:var(--c-parchment);
+    padding:0.7rem 0 0.7rem 1.6rem;
+    border-left:1px solid var(--c-gold);
+    margin-bottom:0.5rem;
+  }
+
+  footer{
+    text-align:center;
+    padding:5vh 6vw 8vh;
+    background:var(--bg-void);
+    color:var(--c-ash);
+    font-size:0.8rem;
+    letter-spacing:0.1em;
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <canvas class="bg-canvas" id="canvas-hero"></canvas>
+  <div class="content">
+    <div class="ref-range reveal in">민수기 20장 – 24장</div>
+    <h1 class="kor-title reveal in">광야의 반전</h1>
+    <p class="sub-title reveal in">죽음의 자리에서 생명이 솟아나는 하나님의 경륜</p>
+  </div>
+  <div class="scroll-cue"></div>
+</section>
+
+<!-- 1. 미리암의 죽음 -->
+<section style="background:var(--bg-dust);">
+  <div class="content">
+    <div class="scene-mark reveal">첫 번째 죽음 · 세대의 마무리</div>
+    <h2 class="scene-title reveal">미리암, 가데스에서 잠들다</h2>
+    <div class="verse ash reveal">“이스라엘 자손 온 회중이 첫째 달에 친 광야에 이르렀다. 백성은 가데스에 머물렀다. 미리암이 그곳에서 죽어 거기에 장사되었다.” (민수기 20:1)</div>
+    <p class="body-text reveal">광야의 시간은 단순한 이동이 아니라, 창조의 질서가 사람 안에서 다시 세워지는 과정입니다. 그러나 그 여정의 한가운데서 ‘죽음’이 먼저 등장합니다. 미리암의 죽음은 단순한 한 인물의 종결이 아니라, 한 세대의 믿음이 마무리되고 새로운 전환이 시작됨을 알리는 표지입니다. 하나님께서 창조하신 생명은 끊어지지 않지만, 사람의 불순종과 한계 속에서 그 흐름은 계속해서 “죽음과 새 출발”이라는 문을 통과하게 됩니다.</p>
+  </div>
+</section>
+
+<!-- 2. 물이 없음 -->
+<section style="background:var(--bg-thirst);">
+  <canvas class="bg-canvas" id="canvas-thirst"></canvas>
+  <div class="content">
+    <div class="scene-mark reveal">생명의 결핍</div>
+    <h2 class="scene-title reveal">회중에게 물이 없었다</h2>
+    <p class="body-text reveal">그 죽음의 장면이 지나가자 곧바로 드러나는 것은 “생명의 결핍”입니다.</p>
+    <div class="verse ash reveal">“회중에게 물이 없었다. 그래서 그들은 모여서 모세와 아론을 대적하였다.” (민수기 20:2)</div>
+    <p class="body-text reveal">광야에서 물은 생명 그 자체입니다. 창세기의 창조에서 물은 생명의 기초였고, 하나님께서 혼돈 위에 질서를 세우실 때 사용하신 도구였습니다. 그런데 이제 그 물이 없습니다. 이것은 단순한 환경의 문제라기보다, 사람 안에서 ‘생명을 신뢰하는 믿음’이 사라진 상태를 보여줍니다.</p>
+    <p class="body-text reveal">백성은 말합니다.</p>
+    <div class="verse ash reveal">“어찌하여 그대들은 우리를 이집트에서 나오게 하여… 이 형편없는 곳으로 이끌고 온 것이오?” (민수기 20:5)</div>
+    <p class="body-text reveal">그들의 시선은 창조주가 아닌 ‘환경’에 고정되어 있습니다. 하나님께서 사람을 선택하여 인도하시는 경륜은, 환경을 바꾸는 데 있지 않고 사람의 내면을 새롭게 하는 데 있습니다. 그러나 사람은 여전히 과거의 안정, 눈에 보이는 풍요를 생명으로 착각합니다.</p>
+  </div>
+</section>
+
+<!-- 3. 반석 사건 -->
+<section style="background:var(--bg-rock);">
+  <div class="content">
+    <div class="scene-mark reveal">말씀이냐, 행위냐</div>
+    <h2 class="scene-title reveal">반석을 향해 말하라</h2>
+    <p class="body-text reveal">그때 하나님께서 말씀하십니다.</p>
+    <div class="verse reveal">“저 반석을 향해 말하여라… 반석에서 물이 나오게 하여라.” (민수기 20:8)</div>
+    <p class="body-text reveal">여기서 하나님의 의도는 분명합니다. ‘말씀’을 통해 생명이 흐르게 하는 것입니다. 창조 때처럼, 하나님은 다시 “말씀”으로 생명을 일으키고자 하십니다. 그러나 모세는 반석을 치며 말합니다.</p>
+
+    <div class="rock-split">
+      <div class="rock-panel command reveal">
+        <h3>하나님의 명령</h3>
+        <p>반석을 향해 <strong style="color:var(--c-gold);font-weight:500;">말하여라.</strong> 말씀으로 생명이 흐르게 하라는 것.</p>
+      </div>
+      <div class="rock-panel strike reveal">
+        <h3>모세의 행위</h3>
+        <p>반석을 <strong style="color:var(--c-ash);font-weight:500;">두 번 치다.</strong> 하나님의 방법을 사람의 방법으로 바꾸다.</p>
+      </div>
+    </div>
+
+    <div class="verse ash reveal">“이 반역자들이여… 우리가 여러분을 위하여 물이 나오게 해야겠소?” (민수기 20:10)</div>
+    <p class="body-text reveal">이 장면은 단순한 실수가 아닙니다. 하나님의 영광을 사람의 행위로 바꾸어 버린 사건입니다. 하나님은 “말씀으로 생명을 주시는 분”인데, 모세는 그것을 “자신의 능력”처럼 표현합니다. 그래서 하나님은 선언하십니다.</p>
+    <div class="verse blood reveal">“너희는 나를 믿지 않았고… 나를 거룩하게 하지 않았다.” (민수기 20:12)</div>
+    <p class="body-text reveal">결국 선택받은 지도자조차 ‘하나님의 방식’이 아닌 ‘자기 방식’으로 행할 때, 약속의 땅에 들어가지 못하게 됩니다. 이것은 하나님의 경륜이 얼마나 철저히 “하나님의 방법” 위에 세워지는지를 보여줍니다.</p>
+  </div>
+</section>
+
+<!-- 4. 아론의 죽음과 계승 -->
+<section style="background:var(--bg-dust);">
+  <div class="content">
+    <div class="scene-mark reveal">단절이 아닌 계승</div>
+    <h2 class="scene-title reveal">아론의 옷이 엘르아살에게</h2>
+    <p class="body-text reveal">이어지는 여정에서도 같은 흐름이 반복됩니다. 에돔은 길을 거절합니다. 길이 막힙니다. 그러나 이것은 단순한 외적 장애가 아니라, 하나님께서 자기 백성을 “다른 길로 인도하시는 방식”입니다.</p>
+    <p class="body-text reveal">그리고 또 한 번의 죽음이 등장합니다.</p>
+    <div class="verse ash reveal">“아론은 자기 백성에게로 돌아갈 것이다… 그가 거기서 죽을 것이다.” (민수기 20:24)</div>
+    <p class="body-text reveal">대제사장의 죽음은 단절이 아니라 ‘계승’입니다. 그의 의복이 엘르아살에게 입혀지는 순간, 하나님께서 이루시는 사역은 사람을 통해 이어지되, 특정 인물에 묶이지 않는다는 사실이 드러납니다. 창조의 목적은 한 개인이 아니라, ‘연속되는 생명의 흐름’에 있기 때문입니다.</p>
+  </div>
+</section>
+
+<!-- 5. 불뱀 -->
+<section style="background:var(--bg-fire);">
+  <canvas class="bg-canvas" id="canvas-fire"></canvas>
+  <div class="content">
+    <div class="scene-mark reveal">거부된 양식, 왜곡된 생명</div>
+    <h2 class="scene-title reveal">불 뱀이 백성 가운데</h2>
+    <p class="body-text reveal">그러나 백성은 여전히 배우지 못합니다.</p>
+    <div class="verse blood reveal">“길을 가는 동안 백성이 인내하지 못하게 되었다.” (민수기 21:4)</div>
+    <p class="body-text reveal">그리고 다시 말합니다.</p>
+    <div class="verse blood reveal">“우리 혼은 이 형편없는 양식이 싫소.” (민수기 21:5)</div>
+    <p class="body-text reveal">여기서 그들이 싫어한 양식은 만나입니다. 하늘에서 내려온 생명의 양식, 하나님께서 직접 공급하신 것입니다. 이것은 사람이 ‘하나님이 주시는 생명’을 거부하고, ‘자기 기준의 만족’을 추구하는 상태를 보여줍니다.</p>
+    <p class="body-text reveal">그 결과로 불 뱀이 등장합니다.</p>
+    <div class="verse blood reveal">“여호와께서 백성 가운데 불 뱀들을 보내셨다.” (민수기 21:6)</div>
+    <p class="body-text reveal">뱀은 창세기에서부터 ‘생명을 왜곡하는 존재’였습니다. 이제 그 왜곡이 실제 죽음으로 나타납니다. 그러나 하나님은 여기서 멈추지 않으십니다.</p>
+  </div>
+</section>
+
+<!-- 6. 놋뱀 -->
+<section style="background:var(--bg-bronze);">
+  <canvas class="bg-canvas" id="canvas-bronze"></canvas>
+  <div class="content">
+    <div class="scene-mark reveal">심판을 바라볼 때 주어지는 생명</div>
+    <h2 class="scene-title reveal">놋 뱀을 쳐다보면 살리라</h2>
+    <div class="verse bronze reveal">“놋 뱀을 만들어 장대 위에 달아 놓아라… 그것을 쳐다보면 살 것이다.” (민수기 21:8)</div>
+    <p class="body-text reveal">이 장면은 놀라운 역설입니다. 죽음의 상징인 뱀을 바라볼 때 생명이 주어집니다. 이것은 하나님께서 ‘심판을 통해 생명을 드러내시는 방식’을 보여줍니다. 사람은 자신의 죄와 죽음을 직면할 때 비로소 참된 생명으로 돌아옵니다.</p>
+  </div>
+</section>
+
+<!-- 7. 우물의 노래 -->
+<section style="background:var(--bg-water);">
+  <canvas class="bg-canvas" id="canvas-water"></canvas>
+  <div class="content">
+    <div class="scene-mark reveal">불평에서 찬양으로</div>
+    <h2 class="scene-title reveal">우물아, 솟아라</h2>
+    <p class="body-text reveal">이후 여정은 점점 “회복된 흐름”으로 나아갑니다.</p>
+    <div class="verse water reveal">“우물아, 솟아라!” (민수기 21:17)</div>
+    <p class="body-text reveal">이제 물은 불평의 대상이 아니라 ‘찬양의 근원’이 됩니다. 하나님께서 인도하시는 과정 속에서 사람은 점차 깨닫기 시작합니다. 생명은 요구해서 얻는 것이 아니라, 하나님께서 주시는 것을 받아 누리는 것임을.</p>
+  </div>
+</section>
+
+<!-- 8. 정복 -->
+<section style="background:var(--bg-war);">
+  <div class="content">
+    <div class="scene-mark reveal">세상 권세를 넘어서</div>
+    <h2 class="scene-title reveal">시혼과 옥이 무너지다</h2>
+    <p class="body-text reveal">그리고 전쟁이 시작됩니다. 시혼과 옥, 강대한 왕들이 무너집니다. 이것은 단순한 정복이 아니라, 하나님께서 선택하신 백성이 세상 권세를 이기는 과정입니다. 창조의 목적이 다시 드러납니다. 하나님은 자기 백성을 통해 땅을 회복하시고, 질서를 다시 세우십니다.</p>
+  </div>
+</section>
+
+<!-- 9. 발람 -->
+<section style="background:#141024;">
+  <div class="content">
+    <div class="scene-mark reveal">저주할 수 없는 백성</div>
+    <h2 class="scene-title reveal" style="color:var(--c-gold-bright);">하나님께서 축복하신 자</h2>
+    <p class="body-text reveal">그 절정에서 발락과 발람의 이야기가 등장합니다. 인간은 저주하려 하지만, 하나님은 축복하십니다.</p>
+    <div class="verse reveal">“하나님께서 저주하시지 않은 사람을 내 어찌 저주하며…” (민수기 23:8)</div>
+    <p class="body-text reveal">여기서 하나님의 경륜이 분명히 드러납니다. 선택된 백성은 외부의 어떤 시도에도 본질적으로 저주받지 않습니다. 왜냐하면 그들의 존재는 하나님의 약속 위에 있기 때문입니다.</p>
+  </div>
+</section>
+
+<!-- FINALE: 별의 예언 -->
+<section class="finale" id="finale">
+  <canvas class="bg-canvas" id="canvas-star"></canvas>
+  <div class="content">
+    <div class="scene-mark reveal" style="color:var(--c-gold);">경륜의 결론을 향하여</div>
+    <h2 class="scene-title reveal" style="color:var(--c-gold-bright);">별 하나가 야곱에게서</h2>
+    <p class="body-text reveal">그리고 발람의 입에서 놀라운 말씀이 선포됩니다.</p>
+    <p class="star-verse reveal">“별 하나가 야곱에게서 나오고… 왕의 지휘봉이 이스라엘에게서 일어나리라.” (민수기 24:17)</p>
+    <p class="body-text reveal">이 말씀은 단순한 예언이 아닙니다. 창조에서 시작된 하나님의 계획, 사람을 선택하시고, 생명을 주시고, 인도하시며, 실패를 지나게 하시고, 결국 하나로 연합시키시는 그 경륜의 ‘결론’을 향해 나아가는 선언입니다.</p>
+    <p class="body-text reveal">광야는 실패의 장소처럼 보이지만, 사실은 하나님의 목적이 점점 선명해지는 자리입니다. 사람은 끊임없이 흔들리고 넘어지지만, 하나님은 그 모든 과정을 통해 ‘자기 뜻’을 이루십니다.</p>
+
+    <p class="body-text reveal" style="margin-top:2.5rem;">결국 이 이야기는 우리를 한 방향으로 이끕니다.</p>
+    <ul class="conclusion-list reveal">
+      <li>하나님께서 창조하신 생명은 단순히 살아남는 것이 아니라,</li>
+      <li>그분의 말씀 안에서 회복되고,</li>
+      <li>그분의 인도 속에서 형성되며,</li>
+      <li>그분의 선택 안에서 보호되고,</li>
+      <li>마침내 그분과 연합되는 것입니다.</li>
+    </ul>
+
+    <div class="closing reveal">
+      광야의 길은 길고 험하지만, 그 끝에는 단순한 땅이 아니라 “하나님과 함께하는 생명”이 기다리고 있습니다.
+      <strong>그리고 그 생명은, 이미 시작되었습니다.</strong>
+    </div>
+  </div>
+</section>
+
+<footer>
+하나님의 영원한 경륜 시리즈 · 민수기 20-24장 · 광야의 반전
+</footer>
+
+<script>
+// ---- Scroll reveal ----
+const revealEls = document.querySelectorAll('.reveal');
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.classList.add('in');
+      io.unobserve(e.target);
+    }
+  });
+},{threshold:0.15});
+revealEls.forEach(el=>io.observe(el));
+
+// ---- Generic starfield/particle canvas ----
+function initParticleCanvas(id, opts){
+  const canvas = document.getElementById(id);
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let w,h,particles=[];
+  const count = opts.count || 80;
+
+  function resize(){
+    w = canvas.width = canvas.offsetWidth;
+    h = canvas.height = canvas.offsetHeight;
+  }
+  function makeParticle(){
+    return {
+      x: Math.random()*w,
+      y: Math.random()*h,
+      r: Math.random()*opts.maxR + opts.minR,
+      vy: (Math.random()*opts.speed + opts.speed*0.3) * (opts.direction||1),
+      vx: (Math.random()-0.5)*opts.drift,
+      a: Math.random()*0.6+0.2
+    };
+  }
+  function init(){
+    resize();
+    particles = Array.from({length:count}, makeParticle);
+  }
+  function draw(){
+    ctx.clearRect(0,0,w,h);
+    particles.forEach(p=>{
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle = opts.color(p.a);
+      ctx.fill();
+      p.y += p.vy;
+      p.x += p.vx;
+      if(p.y < -10) p.y = h+10;
+      if(p.y > h+10) p.y = -10;
+      if(p.x < -10) p.x = w+10;
+      if(p.x > w+10) p.x = -10;
+    });
+    requestAnimationFrame(draw);
+  }
+  window.addEventListener('resize', resize);
+  init();
+  draw();
+}
+
+// Hero: dim gold starfield, slow upward drift
+initParticleCanvas('canvas-hero', {
+  count: 90, minR:0.4, maxR:1.6, speed:0.06, drift:0.02, direction:-1,
+  color:(a)=>`rgba(212,175,95,${a*0.5})`
+});
+
+// Thirst: dry drifting dust motes, slow, ochre
+initParticleCanvas('canvas-thirst', {
+  count: 50, minR:0.5, maxR:1.4, speed:0.04, drift:0.05, direction:1,
+  color:(a)=>`rgba(138,90,58,${a*0.4})`
+});
+
+// Fire: embers rising, red-orange
+initParticleCanvas('canvas-fire', {
+  count: 70, minR:0.6, maxR:2.0, speed:0.15, drift:0.15, direction:-1,
+  color:(a)=>`rgba(156,59,43,${a*0.6})`
+});
+
+// Water: bubbles rising, teal
+initParticleCanvas('canvas-water', {
+  count: 60, minR:0.5, maxR:2.2, speed:0.1, drift:0.04, direction:-1,
+  color:(a)=>`rgba(159,212,224,${a*0.45})`
+});
+
+// ---- Bronze serpent canvas: a glowing pole with an ascending sinuous line, particles gazing upward ----
+(function(){
+  const canvas = document.getElementById('canvas-bronze');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let w,h,t=0;
+  function resize(){ w=canvas.width=canvas.offsetWidth; h=canvas.height=canvas.offsetHeight; }
+  window.addEventListener('resize', resize);
+  resize();
+
+  function draw(){
+    ctx.clearRect(0,0,w,h);
+    const cx = w/2;
+    const poleTop = h*0.18;
+    const poleBottom = h*0.85;
+
+    // pole
+    ctx.strokeStyle = 'rgba(193,122,61,0.35)';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(cx, poleBottom);
+    ctx.lineTo(cx, poleTop);
+    ctx.stroke();
+
+    // serpent sinuous glowing line wrapped on pole
+    ctx.beginPath();
+    const segments = 60;
+    for(let i=0;i<=segments;i++){
+      const yy = poleTop + (poleBottom-poleTop)*(i/segments);
+      const amp = 26 * (1 - i/segments*0.3);
+      const xx = cx + Math.sin(i*0.5 + t*0.02)*amp;
+      if(i===0) ctx.moveTo(xx,yy); else ctx.lineTo(xx,yy);
+    }
+    const grad = ctx.createLinearGradient(0,poleTop,0,poleBottom);
+    grad.addColorStop(0,'rgba(224,151,90,0.9)');
+    grad.addColorStop(1,'rgba(224,151,90,0.25)');
+    ctx.strokeStyle = grad;
+    ctx.lineWidth = 2.5;
+    ctx.shadowColor = 'rgba(224,151,90,0.6)';
+    ctx.shadowBlur = 12;
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+
+    // glow at top (the head, radiant)
+    const headGrad = ctx.createRadialGradient(cx,poleTop,0,cx,poleTop,50);
+    headGrad.addColorStop(0,'rgba(242,216,150,0.9)');
+    headGrad.addColorStop(1,'rgba(242,216,150,0)');
+    ctx.fillStyle = headGrad;
+    ctx.beginPath();
+    ctx.arc(cx,poleTop,50,0,Math.PI*2);
+    ctx.fill();
+
+    t++;
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// ---- Finale: radiant star burst with drifting starfield ----
+(function(){
+  const canvas = document.getElementById('canvas-star');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let w,h,t=0,stars=[];
+  function resize(){
+    w=canvas.width=canvas.offsetWidth; h=canvas.height=canvas.offsetHeight;
+  }
+  function initStars(){
+    stars = Array.from({length:120}, ()=>({
+      x:Math.random()*w, y:Math.random()*h,
+      r:Math.random()*1.3+0.3,
+      a:Math.random()*0.7+0.2,
+      tw:Math.random()*Math.PI*2
+    }));
+  }
+  window.addEventListener('resize', ()=>{resize(); initStars();});
+  resize(); initStars();
+
+  function draw(){
+    ctx.clearRect(0,0,w,h);
+    // twinkling stars
+    stars.forEach(s=>{
+      const flick = 0.5 + 0.5*Math.sin(t*0.03 + s.tw);
+      ctx.beginPath();
+      ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+      ctx.fillStyle = `rgba(233,221,196,${s.a*flick})`;
+      ctx.fill();
+    });
+
+    // central radiant star (야곱에게서 나온 별)
+    const cx = w/2, cy = h*0.32;
+    const pulse = 1 + 0.08*Math.sin(t*0.04);
+    const glow = ctx.createRadialGradient(cx,cy,0,cx,cy,140*pulse);
+    glow.addColorStop(0,'rgba(242,216,150,0.9)');
+    glow.addColorStop(0.4,'rgba(212,175,95,0.35)');
+    glow.addColorStop(1,'rgba(212,175,95,0)');
+    ctx.fillStyle = glow;
+    ctx.beginPath();
+    ctx.arc(cx,cy,140*pulse,0,Math.PI*2);
+    ctx.fill();
+
+    // star rays
+    ctx.save();
+    ctx.translate(cx,cy);
+    ctx.rotate(t*0.0015);
+    ctx.strokeStyle = 'rgba(242,216,150,0.5)';
+    ctx.lineWidth = 1;
+    for(let i=0;i<8;i++){
+      const ang = (Math.PI/4)*i;
+      const len = 26*pulse;
+      ctx.beginPath();
+      ctx.moveTo(Math.cos(ang)*6, Math.sin(ang)*6);
+      ctx.lineTo(Math.cos(ang)*len, Math.sin(ang)*len);
+      ctx.stroke();
+    }
+    ctx.restore();
+
+    t++;
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+</script>
+</body>
+</html>
