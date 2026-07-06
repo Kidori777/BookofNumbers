@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>민수기 — 하나님의 영원한 경륜 시리즈</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:       #0D1018;        /* 광야의 밤 */
+    --surface:  #141820;
+    --veil:     #232B38;        /* 경계선 */
+    --sand:     #C4975A;        /* 광야 모래빛 */
+    --dust:     #A07840;        /* 먼지 황토 */
+    --sky:      #3A6B9E;        /* 광야 하늘 */
+    --cloud:    #7AABCE;        /* 구름 기둥 */
+    --star:     #D4C4A0;        /* 별빛 — 주 텍스트 */
+    --mist:     #8A96A8;        /* 보조 텍스트 */
+    --white:    #F0EBE0;        /* 제목 */
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background-color: var(--bg);
+    color: var(--star);
+    font-family: 'Noto Sans KR', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── 별빛 + 광야 배경 그라디언트 ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 70% 50% at 50% 0%,   rgba(58,107,158,.22) 0%, transparent 65%),
+      radial-gradient(ellipse 50% 40% at 15% 90%,  rgba(196,151,90,.12) 0%, transparent 55%),
+      radial-gradient(ellipse 40% 50% at 88% 60%,  rgba(122,171,206,.08) 0%, transparent 55%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── 별 캔버스 ── */
+  #starfield {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    z-index: 1;
+    padding: 88px 24px 56px;
+    text-align: center;
+    max-width: 860px;
+    margin: 0 auto;
+  }
+
+  .series-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    font-family: 'Noto Serif KR', serif;
+    font-size: 10.5px;
+    font-weight: 400;
+    letter-spacing: .24em;
+    color: var(--sand);
+    margin-bottom: 36px;
+  }
+  .series-label::before,
+  .series-label::after {
+    content: '';
+    display: block;
+    width: 32px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--dust));
+  }
+  .series-label::after {
+    background: linear-gradient(90deg, var(--dust), transparent);
+  }
+
+  /* 시그니처: 구름·불 기둥 */
+  .pillar-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 4px;
+    height: 52px;
+    margin-bottom: 20px;
+  }
+  .pillar-bar {
+    width: 3px;
+    border-radius: 2px;
+    animation: rise 3s ease-in-out infinite alternate;
+  }
+  .pillar-bar:nth-child(1)  { height: 20px; background: linear-gradient(to top, var(--dust), var(--sand), transparent); animation-delay: 0s; }
+  .pillar-bar:nth-child(2)  { height: 32px; background: linear-gradient(to top, var(--sky),  var(--cloud),transparent); animation-delay: .2s; }
+  .pillar-bar:nth-child(3)  { height: 46px; background: linear-gradient(to top, var(--dust), var(--sand), transparent); animation-delay: .1s; }
+  .pillar-bar:nth-child(4)  { height: 52px; background: linear-gradient(to top, var(--sky),  var(--cloud),transparent); animation-delay: .35s; }
+  .pillar-bar:nth-child(5)  { height: 44px; background: linear-gradient(to top, var(--dust), var(--sand), transparent); animation-delay: .15s; }
+  .pillar-bar:nth-child(6)  { height: 38px; background: linear-gradient(to top, var(--sky),  var(--cloud),transparent); animation-delay: .4s; }
+  .pillar-bar:nth-child(7)  { height: 28px; background: linear-gradient(to top, var(--dust), var(--sand), transparent); animation-delay: .05s; }
+
+  @keyframes rise {
+    0%   { opacity: .5; transform: scaleY(.88); }
+    100% { opacity: 1;  transform: scaleY(1.08); }
+  }
+
+  .book-title {
+    font-family: 'Noto Serif KR', serif;
+    font-size: clamp(58px, 11vw, 104px);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -.02em;
+    color: var(--white);
+    text-shadow:
+      0 0 60px rgba(122,171,206,.35),
+      0 0 20px rgba(196,151,90,.2);
+  }
+
+  .hebrew-sub {
+    display: block;
+    font-family: 'Noto Serif KR', serif;
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: .18em;
+    color: var(--star);
+    margin-top: 16px;
+  }
+
+  .book-desc {
+    font-size: 14px;
+    line-height: 2;
+    color: var(--star);
+    margin-top: 22px;
+    max-width: 460px;
+    margin-left: auto;
+    margin-right: auto;
+    word-break: keep-all;
+  }
+  .book-desc em { color: var(--cloud); font-style: normal; }
+
+  /* ── 구분선 ── */
+  .divider {
+    position: relative;
+    z-index: 1;
+    max-width: 860px;
+    margin: 0 auto 44px;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .divider::before,
+  .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--veil), transparent);
+  }
+  .divider-diamond {
+    width: 7px; height: 7px;
+    border: 1px solid var(--sand);
+    transform: rotate(45deg);
+    flex-shrink: 0;
+  }
+
+  /* ── 카운트 ── */
+  .count-bar {
+    position: relative;
+    z-index: 1;
+    max-width: 860px;
+    margin: 0 auto 12px;
+    padding: 0 28px;
+    display: flex;
+    justify-content: flex-end;
+    font-size: 11px;
+    color: var(--star);
+    letter-spacing: .1em;
+  }
+  .count-bar strong { color: var(--sand); }
+
+  /* ── 목록 ── */
+  .list-wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 860px;
+    margin: 0 auto 80px;
+    padding: 0 24px;
+  }
+
+  .episode-link {
+    display: grid;
+    grid-template-columns: 52px 1fr 32px;
+    align-items: center;
+    gap: 18px;
+    text-decoration: none;
+    padding: 22px 20px 22px 24px;
+    margin-bottom: 2px;
+    border: 1px solid transparent;
+    border-bottom-color: var(--veil);
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+
+    opacity: 0;
+    transform: translateY(14px);
+    transition:
+      opacity .5s ease,
+      transform .5s ease,
+      background .2s,
+      border-color .2s;
+  }
+  .episode-link.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* 호버 — 왼쪽 청람 bar */
+  .episode-link::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 14%; bottom: 14%;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--sky), var(--cloud));
+    border-radius: 1px;
+    box-shadow: 0 0 8px var(--cloud);
+    opacity: 0;
+    transition: opacity .22s;
+  }
+  .episode-link:hover {
+    background: rgba(58,107,158,.10);
+    border-bottom-color: var(--sky);
+  }
+  .episode-link:hover::before { opacity: 1; }
+
+  .ep-num {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: .14em;
+    color: var(--dust);
+    text-align: right;
+    user-select: none;
+  }
+
+  .ep-body { min-width: 0; }
+
+  .ep-range {
+    display: block;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: .16em;
+    color: var(--sand);
+    margin-bottom: 5px;
+    text-transform: uppercase;
+  }
+
+  .ep-title {
+    font-family: 'Noto Serif KR', serif;
+    font-size: clamp(15px, 2.4vw, 18px);
+    font-weight: 600;
+    color: var(--white);
+    line-height: 1.4;
+    word-break: keep-all;
+    transition: color .2s;
+  }
+  .episode-link:hover .ep-title { color: var(--cloud); }
+
+  .ep-arrow {
+    font-size: 15px;
+    color: var(--mist);
+    transition: transform .22s, color .2s;
+    text-align: center;
+  }
+  .episode-link:hover .ep-arrow {
+    transform: translateX(5px);
+    color: var(--cloud);
+  }
+
+  /* ── 푸터 ── */
+  .footer {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 28px 24px 48px;
+    font-size: 11.5px;
+    color: var(--star);
+    letter-spacing: .1em;
+    border-top: 1px solid var(--veil);
+    max-width: 860px;
+    margin: 0 auto;
+  }
+  .footer em { color: var(--sand); font-style: normal; }
+
+  @media (max-width: 560px) {
+    .hero { padding: 60px 20px 40px; }
+    .episode-link {
+      grid-template-columns: 36px 1fr 24px;
+      gap: 12px;
+      padding: 18px 14px 18px 18px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="starfield"></canvas>
+
+<header class="hero">
+  <div class="series-label">하나님의 영원한 경륜 시리즈</div>
+  <div class="pillar-wrap">
+    <div class="pillar-bar"></div>
+    <div class="pillar-bar"></div>
+    <div class="pillar-bar"></div>
+    <div class="pillar-bar"></div>
+    <div class="pillar-bar"></div>
+    <div class="pillar-bar"></div>
+    <div class="pillar-bar"></div>
+  </div>
+  <h1 class="book-title">민수기</h1>
+  <span class="hebrew-sub">NUMBERS · 광야를 지나 약속의 땅으로</span>
+  <p class="book-desc">
+    불순종과 반역, 그럼에도 끝나지 않는<br>
+    <em>인도하심</em>의 손길.<br>
+    구름 기둥과 불 기둥이 앞서가는 광야의 여정.
+  </p>
+</header>
+
+<div class="divider"><span class="divider-diamond"></span></div>
+<div class="count-bar">총 <strong>9</strong> 편</div>
+
+<main class="list-wrap" id="list">
+
+  <a class="episode-link"
+     href="https://kidori777.github.io/BookofNumbers/민수기 1장-9장 광야의 질서.html"
+     target="_blank">
+    <span class="ep-num">01</span>
+    <div class="ep-body">
+      <span class="ep-range">1–9장</span>
+      <span class="ep-title">광야의 질서</span>
+    </div>
+    <span class="ep-arrow">→</span>
+  </a>
+
+  <a class="episode-link"
+     href="https://kidori777.github.io/BookofNumbers/민수기 10장-14장 인도하시는 손.html"
+     target="_blank">
+    <span class="ep-num">02</span>
+    <div class="ep-body">
+      <span class="ep-range">10–14장</span>
+      <span class="ep-title">인도하시는 손</span>
+    </div>
+    <span class="ep-arrow">→</span>
+  </a>
+
+  <a class="episode-link"
+     href="https://kidori777.github.io/BookofNumbers/민수기 15장-19장 죽음 속에서 피어난 생명.html"
+     target="_blank">
+    <span class="ep-num">03</span>
+    <div class="ep-body">
+      <span class="ep-range">15–19장</span>
+      <span class="ep-title">죽음 속에서 피어난 생명</span>
+    </div>
+    <span class="ep-arrow">→</span>
+  </a>
+
+  <a class="episode-link"
+     href="https://kidori777.github.io/BookofNumbers/민수기 20장-24장 광야의 반전.html"
+     target="_blank">
+    <span class="ep-num">04</span>
+    <div class="ep-body">
+      <span class="ep-range">20–24장</span>
+      <span class="ep-title">광야의 반전</span>
+    </div>
+    <span class="ep-arrow">→</span>
+  </a>
+
+  <a class="episode-link"
+     href="https://kidori777.github.io/BookofNumbers/민수기 25장-26장 화평의 언약.html"
+     target="_blank">
+    <span class="ep-num">05</span>
+    <div class="ep-body">
+      <span class="ep-range">25–26장</span>
+      <span class="ep-title">화평의 언약</span>
+    </div>
+    <span class="ep-arrow">→</span>
+  </a>
+
+  <a class="episode-link"
+     href="https://kidori777.github.io/BookofNumbers/민수기 27장 이름은 사라지지 않고.html"
+     target="_blank">
+    <span class="ep-num">06</span>
+    <div class="ep-body">
+      <span class="ep-range">27장</span>
+      <span class="ep-title">이름은 사라지지 않고</span>
+    </div>
+    <span class="ep-arrow">→</span>
+  </a>
+
+  <a class="episode-link"
+     href="https://kidori777.github.io/BookofNumbers/민수기 28장-30장 타오르는 신실함.html"
+     target="_blank">
+    <span class="ep-num">07</span>
+    <div class="ep-body">
+      <span class="ep-range">28–30장</span>
+      <span class="ep-title">타오르는 신실함</span>
+    </div>
+    <span class="ep-arrow">→</span>
+  </a>
+
+  <a class="episode-link"
+     href="https://kidori777.github.io/BookofNumbers/민수기 31장-32장 불과 물로 이르는 길.html"
+     target="_blank">
+    <span class="ep-num">08</span>
+    <div class="ep-body">
+      <span class="ep-range">31–32장</span>
+      <span class="ep-title">불과 물로 이르는 길</span>
+    </div>
+    <span class="ep-arrow">→</span>
+  </a>
+
+  <a class="episode-link"
+     href="https://kidori777.github.io/BookofNumbers/민수기 33장-36장 여정의 기록.html"
+     target="_blank">
+    <span class="ep-num">09</span>
+    <div class="ep-body">
+      <span class="ep-range">33–36장</span>
+      <span class="ep-title">여정의 기록</span>
+    </div>
+    <span class="ep-arrow">→</span>
+  </a>
+
+</main>
+
+<footer class="footer">
+  <em>부산교회</em> · 하나님의 영원한 경륜 시리즈 · 민수기 전권
+</footer>
+
+<script>
+/* ── 별빛 파티클 ── */
+(function () {
+  const canvas = document.getElementById('starfield');
+  const ctx    = canvas.getContext('2d');
+  let W, H, stars = [];
+
+  function resize() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', () => { resize(); init(); });
+
+  function rand(a, b) { return a + Math.random() * (b - a); }
+
+  function init() {
+    stars = [];
+    const count = Math.floor((W * H) / 7000);
+    for (let i = 0; i < count; i++) {
+      stars.push({
+        x: rand(0, W),
+        y: rand(0, H),
+        r: rand(.3, 1.4),
+        alpha: rand(.15, .7),
+        speed: rand(.0002, .0008),
+        offset: rand(0, Math.PI * 2)
+      });
+    }
+  }
+  init();
+
+  let t = 0;
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    t += .012;
+    stars.forEach(s => {
+      const a = s.alpha * (.7 + .3 * Math.sin(t * s.speed * 1000 + s.offset));
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(212,196,160,${a})`;
+      ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+/* ── 스크롤 진입 애니메이션 ── */
+const items = document.querySelectorAll('.episode-link');
+const io = new IntersectionObserver(entries => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('visible'), i * 70);
+      io.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.08 });
+items.forEach(el => io.observe(el));
+</script>
+</body>
+</html>
