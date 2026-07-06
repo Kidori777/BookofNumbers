@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>민수기 27장 | 이름과 계승</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@200;300;400;500;600;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink-dusk:#161b31;
+    --ink-dusk-2:#232a4d;
+    --ink-dusk-3:#2f3b63;
+    --gold:#c9a464;
+    --gold-soft:#e3cd9a;
+    --copper:#a15c38;
+    --violet:#736fa0;
+    --parchment:#ede7d8;
+    --parchment-dim:#b8b2a3;
+    --line:rgba(201,164,100,0.28);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:'Noto Serif KR', serif;
+    font-style:normal;
+    background:var(--ink-dusk);
+    color:var(--parchment);
+    line-height:1.9;
+    overflow-x:hidden;
+  }
+  i, em, .italic{font-style:normal !important;}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:40px 24px;
+    overflow:hidden;
+    background:radial-gradient(ellipse at 50% 115%, #4a3420 0%, #2f2419 18%, #1c2038 42%, #12162c 70%, #0c0f22 100%);
+  }
+  #heroCanvas{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+  }
+  .hero-content{
+    position:relative;
+    z-index:2;
+  }
+  .hero-eyebrow{
+    font-size:13px;
+    letter-spacing:0.45em;
+    color:var(--gold-soft);
+    font-weight:300;
+    text-transform:uppercase;
+    opacity:0.85;
+    margin-bottom:28px;
+  }
+  .hero-title{
+    font-size:clamp(38px, 7vw, 74px);
+    font-weight:700;
+    letter-spacing:-0.01em;
+    color:var(--parchment);
+    text-shadow:0 0 40px rgba(201,164,100,0.25);
+    line-height:1.35;
+  }
+  .hero-title .accent{
+    color:var(--gold-soft);
+  }
+  .hero-sub{
+    margin-top:26px;
+    font-size:16px;
+    font-weight:300;
+    color:var(--parchment-dim);
+    letter-spacing:0.06em;
+  }
+  .hero-verse{
+    margin-top:52px;
+    max-width:620px;
+    font-size:19px;
+    font-weight:400;
+    color:var(--gold-soft);
+    line-height:2;
+    padding:26px 32px;
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+  }
+  .hero-verse .ref{
+    display:block;
+    margin-top:12px;
+    font-size:13px;
+    letter-spacing:0.2em;
+    color:var(--parchment-dim);
+  }
+  .scroll-cue{
+    position:absolute;
+    bottom:34px;
+    left:50%;
+    transform:translateX(-50%);
+    font-size:11px;
+    letter-spacing:0.35em;
+    color:var(--parchment-dim);
+    opacity:0.6;
+    z-index:2;
+  }
+  .scroll-cue::after{
+    content:"";
+    display:block;
+    width:1px;
+    height:34px;
+    margin:10px auto 0;
+    background:linear-gradient(var(--gold-soft), transparent);
+    animation:cueMove 2.2s ease-in-out infinite;
+  }
+  @keyframes cueMove{
+    0%,100%{opacity:0.2; transform:translateY(0);}
+    50%{opacity:0.9; transform:translateY(8px);}
+  }
+
+  /* ---------- ARTICLE ---------- */
+  .article{
+    position:relative;
+    max-width:760px;
+    margin:0 auto;
+    padding:120px 26px 60px;
+  }
+  .lifeline{
+    position:absolute;
+    left:26px;
+    top:0;
+    bottom:0;
+    width:1px;
+    background:linear-gradient(to bottom, transparent, var(--line) 6%, var(--line) 94%, transparent);
+  }
+  @media(min-width:820px){
+    .article{padding-left:70px;}
+    .lifeline{left:24px;}
+  }
+
+  .section{
+    position:relative;
+    margin-bottom:96px;
+    opacity:0;
+    transform:translateY(28px);
+    transition:opacity 1s ease, transform 1s ease;
+  }
+  .section.visible{
+    opacity:1;
+    transform:translateY(0);
+  }
+  .node{
+    position:absolute;
+    left:-52px;
+    top:6px;
+    width:9px;
+    height:9px;
+    border-radius:50%;
+    background:var(--gold);
+    box-shadow:0 0 0 4px rgba(201,164,100,0.12);
+    display:none;
+  }
+  @media(min-width:820px){
+    .node{display:block;}
+  }
+
+  .section-label{
+    font-size:12px;
+    letter-spacing:0.32em;
+    color:var(--copper);
+    font-weight:500;
+    text-transform:uppercase;
+    margin-bottom:16px;
+  }
+  .section-title{
+    font-size:clamp(24px, 3.6vw, 32px);
+    font-weight:600;
+    color:var(--parchment);
+    margin-bottom:26px;
+    letter-spacing:-0.01em;
+  }
+  .section p{
+    font-size:17px;
+    font-weight:300;
+    color:var(--parchment-dim);
+    margin-bottom:20px;
+  }
+  .section p strong{
+    color:var(--parchment);
+    font-weight:500;
+  }
+
+  .verse-block{
+    margin:30px 0;
+    padding:22px 26px;
+    background:linear-gradient(135deg, rgba(201,164,100,0.08), rgba(115,111,160,0.06));
+    border-left:2px solid var(--gold);
+    border-radius:2px;
+  }
+  .verse-block p{
+    color:var(--gold-soft);
+    font-weight:400;
+    font-size:18px;
+    margin-bottom:8px;
+  }
+  .verse-block .ref{
+    font-size:12.5px;
+    letter-spacing:0.15em;
+    color:var(--parchment-dim);
+  }
+
+  /* flow summary list */
+  .flow-list{
+    list-style:none;
+    margin:30px 0;
+    counter-reset:flow;
+  }
+  .flow-list li{
+    counter-increment:flow;
+    position:relative;
+    padding:10px 0 10px 46px;
+    font-size:17px;
+    font-weight:400;
+    color:var(--parchment);
+    border-bottom:1px solid rgba(201,164,100,0.12);
+  }
+  .flow-list li::before{
+    content:counter(flow, decimal-leading-zero);
+    position:absolute;
+    left:0;
+    top:10px;
+    font-size:13px;
+    color:var(--copper);
+    letter-spacing:0.05em;
+    font-weight:600;
+  }
+  .flow-list li:last-child{border-bottom:none;}
+
+  .closing{
+    text-align:center;
+    padding:80px 26px 120px;
+    background:linear-gradient(to bottom, transparent, rgba(74,52,32,0.18));
+  }
+  .closing p{
+    font-size:19px;
+    font-weight:300;
+    color:var(--gold-soft);
+    line-height:2.1;
+    max-width:560px;
+    margin:0 auto 18px;
+  }
+  .closing .final{
+    margin-top:34px;
+    font-size:22px;
+    font-weight:600;
+    color:var(--parchment);
+  }
+</style>
+</head>
+<body>
+
+<section class="hero">
+  <canvas id="heroCanvas"></canvas>
+  <div class="hero-content">
+    <div class="hero-eyebrow">민수기 27장 · NUMBERS 27</div>
+    <h1 class="hero-title">이름은 사라지지 않고<br><span class="accent">길은 끊어지지 않는다</span></h1>
+    <p class="hero-sub">슬로브핫의 딸들, 그리고 여호수아를 향한 부르심</p>
+    <div class="hero-verse">
+      “그때에 요셉의 아들 므낫세 가문에서… 슬로브핫의 딸들이 가까이 나아왔다.”
+      <span class="ref">민수기 27:1</span>
+    </div>
+  </div>
+  <div class="scroll-cue">SCROLL</div>
+</section>
+
+<div class="article">
+  <div class="lifeline"></div>
+
+  <div class="section">
+    <span class="node"></span>
+    <div class="section-label">Ⅰ · 나아오는 이름들</div>
+    <h2 class="section-title">회막 앞에 선 다섯 여인</h2>
+    <p>광야의 긴 여정 속에서, 하나님께서 창조하신 땅과 그 백성 사이의 관계가 점차 드러나고 있던 그때, 한 장면이 조용히 그러나 깊은 울림으로 펼쳐집니다. 이름이 불리는 다섯 여인—말라와 노아와 호글라와 밀가와 디르사. 그들은 단순히 한 가문의 딸들이 아니라, 하나님께서 “사람”을 어떻게 기억하시고, “생명”을 어떻게 이어가시는지를 드러내는 증거로 등장합니다.</p>
+    <p>그들은 회막 입구, 곧 하나님과 사람 사이의 접점에 섭니다. 그리고 말합니다.</p>
+    <div class="verse-block">
+      <p>“아들이 없다고 하여 우리 아버지의 이름이 가문에서 사라져야 한다는 말입니까?”</p>
+      <div class="ref">민 27:4</div>
+    </div>
+    <p>이 질문은 단순한 상속권의 요구가 아닙니다. 창조의 처음으로 거슬러 올라가는 질문입니다. 하나님께서 사람을 지으실 때, 그 사람을 통해 생명이 이어지고 이름이 남게 하신 뜻, 곧 “생명의 지속”에 대한 물음입니다. 이 여인들은 자신의 몫을 요구하기 전에, 하나님께서 주신 생명의 의미를 붙잡고 있습니다. 아버지의 이름이 사라지지 않기를 바라는 그 간구는, 하나님께서 사람에게 부여하신 존재의 연속성에 대한 갈망입니다.</p>
+  </div>
+
+  <div class="section">
+    <span class="node"></span>
+    <div class="section-label">Ⅱ · 여호와 앞으로</div>
+    <h2 class="section-title">사람의 지혜로 완결되지 않는 문제</h2>
+    <p>모세는 이 문제를 판단하지 않습니다. 그는 “이 문제를 여호와 앞에 가져갑니다.” (민 27:5) 여기서 우리는 하나님 나라의 중요한 질서를 보게 됩니다. 사람의 문제는 사람의 지혜로 완결되지 않고, 반드시 하나님 앞에서 해석되어야 한다는 것입니다.</p>
+    <p>그리고 하나님께서 응답하십니다.</p>
+    <div class="verse-block">
+      <p>“슬로브핫의 딸들의 말이 옳다.”</p>
+      <div class="ref">민 27:7</div>
+    </div>
+    <p>이 한 문장은 단순한 판결이 아니라, 하나님의 경륜 속에서 “선택”이 어떻게 이루어지는지를 보여줍니다. 하나님은 기존의 관습에 얽매이지 않으시고, 생명을 보존하는 방향으로, 이름을 이어가는 방향으로, 그리고 공의와 긍휼이 함께 흐르는 방향으로 선택하십니다. 딸들에게도 유업이 주어지도록 하신 이 결정은, 단순한 제도의 변화가 아니라 하나님의 마음의 방향을 드러냅니다.</p>
+  </div>
+
+  <div class="section">
+    <span class="node"></span>
+    <div class="section-label">Ⅲ · 유업의 질서</div>
+    <h2 class="section-title">끊어지지 않도록 세우신 구조</h2>
+    <p>이어지는 말씀은 질서를 세우는 규례로 확장됩니다.</p>
+    <div class="verse-block">
+      <p>“누구든지 아들이 없이 죽으면, 그의 유업이 그의 딸에게 돌아가게 해야 한다.”</p>
+      <div class="ref">민 27:8</div>
+    </div>
+    <p>이 규례는 단순한 법이 아닙니다. 하나님께서 생명을 어떻게 보호하시고, 사람의 존재를 어떻게 이어가시는지를 보여주는 구조입니다. 창조에서 시작된 생명은, 단절이 아니라 이어짐을 향해 흐릅니다. 그리고 하나님은 그 흐름이 끊어지지 않도록 공동체 안에 질서를 세우십니다.</p>
+    <p>이렇게 “땅”은 단순한 소유가 아니라, 하나님과 사람 사이의 관계를 담는 그릇이 됩니다. 땅은 생명이 머무는 자리이며, 이름이 기억되는 장소이며, 하나님이 주신 약속이 구체적으로 드러나는 공간입니다.</p>
+  </div>
+
+  <div class="section">
+    <span class="node"></span>
+    <div class="section-label">Ⅳ · 아바림산에서</div>
+    <h2 class="section-title">바라보되 들어가지 못하는 땅</h2>
+    <p>그러나 이야기의 흐름은 여기서 멈추지 않습니다.</p>
+    <div class="verse-block">
+      <p>“너는 이 아바림산에 올라… 그 땅을 바라보아라.”</p>
+      <div class="ref">민 27:12</div>
+    </div>
+    <p>이제 시선은 모세에게로 옮겨갑니다. 그는 이 모든 질서를 세운 사람이며, 하나님과 얼굴을 맞대었던 지도자입니다. 그러나 하나님은 그에게 말씀하십니다.</p>
+    <div class="verse-block">
+      <p>“그 땅을 바라본 다음에는… 너도 네 백성에게로 돌아가게 될 것이다.”</p>
+      <div class="ref">민 27:13</div>
+    </div>
+    <p>이 장면은 조용하지만 깊은 긴장을 품고 있습니다. 모세는 땅에 들어가지 못합니다. 그 이유는 분명히 밝혀집니다.</p>
+    <div class="verse-block">
+      <p>“너희가 나의 말을 거슬렀고… 나를 거룩하게 하지 않았기 때문이다.”</p>
+      <div class="ref">민 27:14</div>
+    </div>
+    <p>여기서 우리는 하나님 경륜의 또 다른 원리를 보게 됩니다. 하나님은 사람을 사용하시지만, 그 사람 자체가 목적이 되지는 않습니다. 아무리 위대한 지도자라도, 하나님의 거룩을 드러내지 못하면 그 역할은 제한됩니다. 이것은 심판이면서 동시에 보호입니다. 하나님의 일은 인간의 능력에 의해 완성되지 않도록 하시는, 하나님의 방식입니다.</p>
+  </div>
+
+  <div class="section">
+    <span class="node"></span>
+    <div class="section-label">Ⅴ · 목자 없는 양처럼</div>
+    <h2 class="section-title">지도자의 마지막 간구</h2>
+    <p>그렇다면 이 백성은 어떻게 되는가?</p>
+    <p>모세는 하나님께 구합니다.</p>
+    <div class="verse-block">
+      <p>“이 회중 위에 한 사람을 세워 주십시오… 목자 없는 양처럼 되지 않게 하시기를 바랍니다.”</p>
+      <div class="ref">민 27:16-17</div>
+    </div>
+    <p>이 기도는 지도자의 마지막 요청이 아니라, 하나님 경륜의 핵심을 드러내는 간구입니다. 사람은 인도가 필요합니다. 창조된 존재는 스스로 완결되지 않으며, 반드시 이끄심을 받아야 합니다. 모세는 그것을 알고 있었습니다.</p>
+  </div>
+
+  <div class="section">
+    <span class="node"></span>
+    <div class="section-label">Ⅵ · 영이 머무는 사람</div>
+    <h2 class="section-title">이미 준비된 사람, 여호수아</h2>
+    <p>하나님은 이미 준비하신 사람이 있음을 드러내십니다.</p>
+    <div class="verse-block">
+      <p>“눈의 아들 여호수아를 데려오너라. 그는 나의 영이 머무는 사람이다.”</p>
+      <div class="ref">민 27:18</div>
+    </div>
+    <p>여호수아는 단순한 후계자가 아닙니다. 그는 “영이 머무는 사람”입니다. 여기서 우리는 인도의 본질을 보게 됩니다. 진정한 인도는 능력이나 경험이 아니라, 하나님의 영이 함께하는 데서 비롯됩니다.</p>
+    <p>모세는 그에게 안수합니다.</p>
+    <div class="verse-block">
+      <p>“그에게 안수하고 책무를 맡겼다.”</p>
+      <div class="ref">민 27:23</div>
+    </div>
+    <p>이 장면은 단순한 권력 이양이 아닙니다. 이것은 “연합”의 장면입니다. 하나님께서 한 사람에게 맡기셨던 일을, 또 다른 사람에게 이어가시는 흐름입니다. 모세와 여호수아, 과거와 미래, 경험과 약속이 하나로 이어지는 순간입니다.</p>
+  </div>
+
+  <div class="section">
+    <span class="node"></span>
+    <div class="section-label">Ⅶ · 흐름</div>
+    <h2 class="section-title">하나님의 경륜이 그리는 순서</h2>
+    <p>여기까지의 흐름을 따라오다 보면, 우리는 점차 한 가지 사실을 깨닫게 됩니다.</p>
+    <p>하나님은</p>
+    <ol class="flow-list">
+      <li>창조에서 시작하여</li>
+      <li>사람을 세우시고</li>
+      <li>생명을 이어가게 하시며</li>
+      <li>선택을 통해 질서를 세우시고</li>
+      <li>인도를 통해 길을 여시며</li>
+      <li>과정을 거치게 하시고</li>
+      <li>마침내 연합 안으로 이끄십니다</li>
+    </ol>
+    <p>슬로브핫의 딸들의 이야기와 모세의 마지막 장면은 서로 다른 이야기처럼 보이지만, למעשה 하나의 흐름 안에 있습니다. 하나는 “이름이 사라지지 않게 하시는 하나님”을, 다른 하나는 “사람이 바뀌어도 길이 끊어지지 않게 하시는 하나님”을 보여줍니다.</p>
+  </div>
+
+</div>
+
+<div class="closing">
+  <p>결국 이 모든 것은 한 방향을 향합니다.<br>하나님은 단순히 땅을 나누어 주시는 분이 아니라, 그 땅 위에 “하나님의 생명과 질서와 인도”가 지속되도록 경륜을 이루시는 분이십니다.</p>
+  <p>사람은 지나가고, 세대는 바뀌지만, 하나님의 목적은 끊어지지 않습니다.</p>
+  <p>그 목적은 하나님의 생명이 사람 안에서 이어지고, 그 사람들이 하나님의 인도를 따라 살아가며, 결국 하나님과 하나 되는 자리까지 이르는 것입니다.</p>
+  <p>이 이야기를 따라가다 보면, 우리는 어느 순간 깨닫게 됩니다. 이 모든 과정이 단지 이스라엘의 역사에 대한 기록이 아니라, 오늘을 살아가는 우리를 향한 하나님의 동일한 부르심이라는 것을.</p>
+  <p>하나님은 지금도 이름을 기억하시고, 길을 준비하시며, 사람을 세우시고, 그들을 통해 자신의 뜻을 이어가고 계십니다.</p>
+  <p class="final">그리고 그 모든 흐름은 결국 하나의 목적,<br>곧 하나님과 사람의 깊은 연합으로 수렴되고 있습니다.</p>
+</div>
+
+<script>
+  // ---- Hero canvas: ascending light particles over a twilight mountain silhouette ----
+  const canvas = document.getElementById('heroCanvas');
+  const ctx = canvas.getContext('2d');
+  let w, h;
+  function resize(){
+    w = canvas.width = canvas.offsetWidth;
+    h = canvas.height = canvas.offsetHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  // mountain silhouette layers
+  function drawMountains(){
+    const layers = [
+      {color:'rgba(18,20,38,0.9)', h:0.62, amp:70, seed:1},
+      {color:'rgba(28,26,40,0.95)', h:0.72, amp:50, seed:2},
+      {color:'rgba(10,10,20,1)', h:0.84, amp:36, seed:3}
+    ];
+    layers.forEach(layer=>{
+      ctx.beginPath();
+      ctx.moveTo(0, h);
+      let base = h*layer.h;
+      for(let x=0;x<=w;x+=20){
+        let y = base + Math.sin((x*0.004)+layer.seed*3)*layer.amp + Math.sin((x*0.011)+layer.seed)*layer.amp*0.4;
+        ctx.lineTo(x,y);
+      }
+      ctx.lineTo(w,h);
+      ctx.closePath();
+      ctx.fillStyle = layer.color;
+      ctx.fill();
+    });
+  }
+
+  const particles = [];
+  const PCOUNT = 70;
+  for(let i=0;i<PCOUNT;i++){
+    particles.push({
+      x: Math.random()*w,
+      y: h + Math.random()*h,
+      r: Math.random()*1.8+0.4,
+      speed: Math.random()*0.5+0.15,
+      drift: (Math.random()-0.5)*0.3,
+      alpha: Math.random()*0.6+0.2,
+      hueGold: Math.random() > 0.35
+    });
+  }
+
+  function animate(){
+    ctx.clearRect(0,0,w,h);
+    drawMountains();
+    particles.forEach(p=>{
+      p.y -= p.speed;
+      p.x += p.drift;
+      if(p.y < -10){
+        p.y = h + 10;
+        p.x = Math.random()*w;
+      }
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+      ctx.fillStyle = p.hueGold
+        ? `rgba(230,201,142,${p.alpha})`
+        : `rgba(150,145,190,${p.alpha})`;
+      ctx.fill();
+    });
+    requestAnimationFrame(animate);
+  }
+  animate();
+
+  // ---- Scroll reveal ----
+  const sections = document.querySelectorAll('.section');
+  const observer = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  sections.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>

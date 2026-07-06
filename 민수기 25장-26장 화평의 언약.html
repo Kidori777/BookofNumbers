@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>민수기 25장-26장 | 연합의 파괴, 그리고 화평의 언약</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@200;300;400;500;600;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --void:#0b0908;
+    --void-2:#151009;
+    --ember:#7a1f1a;
+    --ember-bright:#b8462f;
+    --copper:#a8672e;
+    --gold:#c9a54c;
+    --gold-soft:#e0c583;
+    --parchment:#e9e0cf;
+    --ash:#8a7d6c;
+    --line:rgba(233,224,207,0.12);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--void);
+    color:var(--parchment);
+    font-family:'Noto Serif KR', serif;
+    font-style:normal;
+    line-height:1.9;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  em, i, .italic{font-style:normal !important;}
+
+  canvas#field{
+    position:fixed;
+    top:0; left:0;
+    width:100%; height:100%;
+    z-index:0;
+    pointer-events:none;
+  }
+
+  .veil{
+    position:fixed;
+    top:0; left:0; width:100%; height:100%;
+    background:linear-gradient(180deg, rgba(11,9,8,0.35) 0%, rgba(11,9,8,0.75) 55%, rgba(11,9,8,0.95) 100%);
+    z-index:1;
+    pointer-events:none;
+  }
+
+  main{position:relative; z-index:2;}
+
+  /* HERO */
+  .hero{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:40px 24px;
+    position:relative;
+  }
+  .hero-eyebrow{
+    font-size:13px;
+    letter-spacing:0.45em;
+    color:var(--gold);
+    font-weight:500;
+    margin-bottom:28px;
+    opacity:0;
+    animation:fadeUp 1.4s ease 0.3s forwards;
+  }
+  .hero-title{
+    font-size:clamp(48px, 9vw, 108px);
+    font-weight:900;
+    letter-spacing:0.02em;
+    line-height:1.15;
+    color:var(--parchment);
+    opacity:0;
+    animation:fadeUp 1.4s ease 0.6s forwards;
+  }
+  .hero-title span{
+    display:block;
+    font-size:clamp(24px, 4vw, 40px);
+    font-weight:300;
+    color:var(--ash);
+    margin-top:18px;
+    letter-spacing:0.05em;
+  }
+  .hero-sub{
+    margin-top:46px;
+    max-width:560px;
+    font-size:17px;
+    font-weight:300;
+    color:var(--ash);
+    line-height:1.9;
+    opacity:0;
+    animation:fadeUp 1.4s ease 0.9s forwards;
+  }
+  .hero-sub strong{
+    color:var(--gold-soft);
+    font-weight:500;
+  }
+  @keyframes fadeUp{
+    from{opacity:0; transform:translateY(24px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+  .scroll-cue{
+    position:absolute;
+    bottom:44px;
+    left:50%;
+    transform:translateX(-50%);
+    width:1px; height:64px;
+    background:linear-gradient(180deg, transparent, var(--gold) 60%, transparent);
+    opacity:0;
+    animation:fadeUp 1.4s ease 1.3s forwards, pulse 2.4s ease-in-out 2s infinite;
+  }
+  @keyframes pulse{
+    0%,100%{opacity:0.3;}
+    50%{opacity:0.9;}
+  }
+
+  /* SECTIONS */
+  section.block{
+    max-width:700px;
+    margin:0 auto;
+    padding:100px 28px;
+  }
+  .divider-line{
+    max-width:700px;
+    margin:0 auto;
+    padding:0 28px;
+  }
+  .divider-line hr{
+    border:none;
+    height:1px;
+    background:var(--line);
+  }
+
+  .reveal{
+    opacity:0;
+    transform:translateY(36px);
+    transition:opacity 1.1s ease, transform 1.1s ease;
+  }
+  .reveal.in{
+    opacity:1;
+    transform:translateY(0);
+  }
+
+  .verse-eyebrow{
+    display:inline-block;
+    font-size:12px;
+    font-weight:600;
+    letter-spacing:0.28em;
+    padding:6px 14px;
+    border:1px solid var(--line);
+    border-radius:2px;
+    margin-bottom:26px;
+  }
+  .stage-judgment .verse-eyebrow{ color:var(--ember-bright); border-color:rgba(184,70,47,0.35); }
+  .stage-turn .verse-eyebrow{ color:var(--copper); border-color:rgba(168,103,46,0.4); }
+  .stage-hope .verse-eyebrow{ color:var(--gold); border-color:rgba(201,165,76,0.4); }
+
+  blockquote{
+    font-size:clamp(22px, 3vw, 30px);
+    font-weight:600;
+    line-height:1.65;
+    color:var(--parchment);
+    padding-left:26px;
+    border-left:2px solid var(--line);
+    margin-bottom:36px;
+  }
+  .stage-judgment blockquote{ border-left-color:var(--ember-bright); }
+  .stage-turn blockquote{ border-left-color:var(--copper); }
+  .stage-hope blockquote{ border-left-color:var(--gold); }
+
+  p.commentary{
+    font-size:17px;
+    font-weight:300;
+    color:#d8cdb9;
+    line-height:2.05;
+    letter-spacing:0.01em;
+  }
+  p.commentary + p.commentary{ margin-top:22px; }
+
+  .transition-line{
+    text-align:center;
+    font-size:18px;
+    font-weight:400;
+    color:var(--ash);
+    padding:60px 28px;
+    max-width:600px;
+    margin:0 auto;
+    letter-spacing:0.02em;
+  }
+
+  .plain-note{
+    max-width:700px;
+    margin:0 auto;
+    padding:80px 28px 20px;
+    font-size:17px;
+    font-weight:300;
+    color:#d8cdb9;
+    line-height:2.05;
+  }
+
+  /* CLOSING */
+  .closing{
+    position:relative;
+    padding:160px 28px 200px;
+    text-align:center;
+    background:linear-gradient(180deg, rgba(11,9,8,0) 0%, rgba(20,15,6,0.55) 40%, rgba(28,20,6,0.85) 100%);
+  }
+  .closing-inner{
+    max-width:640px;
+    margin:0 auto;
+  }
+  .closing-title{
+    font-size:clamp(30px, 5vw, 44px);
+    font-weight:700;
+    color:var(--gold-soft);
+    margin-bottom:36px;
+    line-height:1.5;
+  }
+  .closing p{
+    font-size:17px;
+    font-weight:300;
+    color:#d8cdb9;
+    line-height:2.05;
+    margin-bottom:22px;
+  }
+  .closing-final{
+    margin-top:52px;
+    font-size:20px;
+    font-weight:500;
+    color:var(--parchment);
+    letter-spacing:0.02em;
+  }
+
+  @media (max-width:600px){
+    section.block{padding:72px 22px;}
+    .closing{padding:110px 22px 140px;}
+    blockquote{padding-left:18px;}
+  }
+</style>
+</head>
+<body>
+
+<canvas id="field"></canvas>
+<div class="veil"></div>
+
+<main>
+
+  <section class="hero">
+    <div class="hero-eyebrow">하나님의 영원한 경륜 시리즈 · 민수기</div>
+    <h1 class="hero-title">25장 · 26장
+      <span>연합의 파괴, 그리고 화평의 언약</span>
+    </h1>
+    <p class="hero-sub">시팀의 불티는 재앙이 되었고, 재앙의 잿더미 위에서 하나님은 다시 <strong>이름</strong>을 부르시고 <strong>수</strong>를 세십니다.</p>
+    <div class="scroll-cue"></div>
+  </section>
+
+  <section class="block stage-judgment reveal">
+    <span class="verse-eyebrow">민수기 25:1</span>
+    <blockquote>“이스라엘이 시팀에 거주할 때에 백성이 모압의 딸들과 음행을 저지르기 시작하였다.”</blockquote>
+    <p class="commentary">광야의 여정이 끝을 향해 가까워질수록, 이스라엘의 실패는 더욱 깊은 본질을 드러냅니다. 이 구절은 단순한 도덕적 타락의 기록이 아니라, 하나님께서 창조하신 ‘사람’이 어디에서 무너지는지를 보여주는 결정적인 장면입니다. 그들은 더 이상 외부의 압박 때문에 넘어지는 것이 아니라, 내부의 욕망과 선택으로 스스로 무너지고 있었습니다.</p>
+  </section>
+
+  <section class="block stage-judgment reveal">
+    <span class="verse-eyebrow">민수기 25:2</span>
+    <blockquote>“그 여자들이 자기 신들에게 희생 제물을 바치는 일에 백성을 초대하니, 백성은 그것을 먹고 그들의 신들에게 절하였다.”</blockquote>
+    <p class="commentary">여기서 시작된 것은 단순한 음행이 아니라 ‘연합’의 왜곡입니다. 하나님께서 창조하신 사람은 본래 하나님과 연합하도록 지어졌습니다. 그러나 사람은 그 연합을 잃어버린 채, 다른 것과 결합하려 합니다. 먹는 행위는 단순한 식사가 아니라 교제이며, 참여이며, 결국 ‘누구와 하나 되는가’에 대한 선택입니다. 이스라엘은 생명의 하나님 대신, 우상의 체계 속으로 스스로 들어갔습니다.</p>
+  </section>
+
+  <section class="block stage-judgment reveal">
+    <span class="verse-eyebrow">민수기 25:3</span>
+    <blockquote>“이스라엘이 바알브올과 결합하였으므로 여호와의 진노가 이스라엘을 향해 불붙었다.”</blockquote>
+    <p class="commentary">‘결합하였다’는 표현은 단순한 우상숭배 이상의 의미를 담고 있습니다. 이는 영적인 혼합이며, 존재의 방향이 바뀌는 사건입니다. 하나님께서 사람을 창조하신 목적은 생명 안에서 하나님과 하나 되는 것이었으나, 이스라엘은 다른 주인을 선택함으로써 그 본래 목적을 거스르게 됩니다. 하나님의 진노는 감정적인 분노가 아니라, 생명에서 떠난 존재가 필연적으로 마주하는 결과입니다.</p>
+  </section>
+
+  <section class="block stage-judgment reveal">
+    <span class="verse-eyebrow">민수기 25:4</span>
+    <blockquote>“너는 백성의 인도자들을 모두 데려다가… 나무에 매달아라… 그래야 나 여호와의 맹렬한 진노가… 떠날 것이다.”</blockquote>
+    <p class="commentary">이 장면은 매우 엄중합니다. 하나님은 공동체의 머리된 자들을 통해 책임을 묻고 계십니다. 왜냐하면 ‘인도’는 단순한 지도력이 아니라 방향을 결정하는 일이기 때문입니다. 사람이 어디를 향해 가는가, 누구와 연합하는가에 따라 공동체 전체의 운명이 결정됩니다.</p>
+  </section>
+
+  <p class="transition-line reveal">그런데 바로 그때, 전혀 다른 장면이 등장합니다.</p>
+
+  <section class="block stage-judgment reveal">
+    <span class="verse-eyebrow">민수기 25:6</span>
+    <blockquote>“이스라엘 자손의 온 회중이 회막 입구에서 울고 있던 바로 그때에… 한 사람이… 한 미디안 여자를 데리고…”</blockquote>
+    <p class="commentary">눈물과 회개가 있는 자리 한복판에서, 한 사람은 여전히 하나님을 무시하며 죄를 드러냅니다. 이것은 인간의 이중성을 보여줍니다. 같은 공동체 안에서도 어떤 이는 하나님께 돌이키고, 어떤 이는 더 깊이 어둠으로 들어갑니다. 하나님은 항상 ‘선택’의 순간을 사람 앞에 두십니다.</p>
+  </section>
+
+  <section class="block stage-turn reveal">
+    <span class="verse-eyebrow">민수기 25:7-8</span>
+    <blockquote>“비느하스가 그것을 보고… 손에 창을 들고… 그 둘을 함께 찌르니… 재앙이 그쳤다.”</blockquote>
+    <p class="commentary">비느하스의 행동은 단순한 분노가 아니라, ‘하나님의 질투’에 참여한 사건입니다. 여기서 질투는 인간적인 감정이 아니라, 하나님이 자신의 창조 목적을 끝까지 지키려는 열망입니다. 하나님은 사람이 다른 것과 연합하여 멸망하는 것을 결코 방관하지 않으십니다.</p>
+  </section>
+
+  <section class="block stage-turn reveal">
+    <span class="verse-eyebrow">민수기 25:9</span>
+    <blockquote>“그 재앙으로 죽은 사람이 이만 사천 명이었다.”</blockquote>
+    <p class="commentary">죄의 결과는 분명합니다. 생명에서 떠난 선택은 죽음으로 이어집니다. 그러나 이 죽음의 한가운데서, 하나님은 또 다른 길을 여십니다.</p>
+  </section>
+
+  <section class="block stage-turn reveal">
+    <span class="verse-eyebrow">민수기 25:12</span>
+    <blockquote>“이제 내가 그에게 나의 화평의 언약을 준다.”</blockquote>
+    <p class="commentary">놀랍게도, 심판의 자리에서 ‘화평의 언약’이 선언됩니다. 하나님은 단지 죄를 끊어내는 데서 멈추지 않으시고, 다시 ‘연합’을 회복할 길을 마련하십니다. 비느하스는 단순히 한 사건의 주인공이 아니라, 하나님과 사람 사이의 관계를 다시 세우는 통로가 됩니다.</p>
+  </section>
+
+  <p class="transition-line reveal">이 사건 이후, 이야기는 갑작스럽게 전환됩니다.</p>
+
+  <section class="block stage-hope reveal">
+    <span class="verse-eyebrow">민수기 26:1</span>
+    <blockquote>“재앙이 그친 후에 여호와께서… 말씀하셨다.”</blockquote>
+    <p class="commentary">심판이 끝난 자리에서, 하나님은 다시 ‘수’를 세게 하십니다. 이것은 단순한 인구조사가 아닙니다. 하나님께서 다시 시작하시는 창조의 질서를 보여주는 장면입니다. 한 세대는 광야에서 사라졌고, 새로운 세대가 등장합니다.</p>
+  </section>
+
+  <section class="block stage-hope reveal">
+    <span class="verse-eyebrow">민수기 26:2</span>
+    <blockquote>“이십 세 이상 된 이들을 모두 조사하여라.”</blockquote>
+    <p class="commentary">이것은 전쟁을 위한 준비이기도 하지만, 더 깊은 의미에서는 ‘하나님의 백성으로서의 정체성 회복’입니다. 하나님은 무너진 공동체를 버리지 않으시고, 다시 세우십니다. 사람은 실패하지만, 하나님의 경륜은 멈추지 않습니다.</p>
+  </section>
+
+  <p class="plain-note reveal">각 지파의 이름이 길게 나열되는 이 장은 지루한 기록처럼 보이지만, 사실은 매우 깊은 의미를 담고 있습니다. 이름은 존재를 의미하고, 가문은 연결을 의미합니다. 하나님은 한 사람 한 사람을 잊지 않으시며, 그들을 통해 역사를 이어가십니다.</p>
+
+  <section class="block stage-hope reveal">
+    <span class="verse-eyebrow">민수기 26:11</span>
+    <blockquote>“그러나 고라의 자손은 죽지 않았다.”</blockquote>
+    <p class="commentary">심판 속에서도 남겨진 자들이 있습니다. 이것은 단순한 생존이 아니라 ‘은혜의 흔적’입니다. 하나님은 언제나 전부를 끊어내지 않으시고, 이어갈 씨를 남겨 두십니다.</p>
+  </section>
+
+  <section class="block stage-hope reveal">
+    <span class="verse-eyebrow">민수기 26:33</span>
+    <blockquote>“헤벨의 아들 슬로브핫에게는 아들이 없고 딸만 있었다.”</blockquote>
+    <p class="commentary">이 작은 언급조차도 이후의 이야기로 이어지는 씨앗이 됩니다. 하나님은 사회적 구조를 넘어, 자신의 뜻을 이루기 위해 예상하지 못한 방식으로 길을 여십니다.</p>
+  </section>
+
+  <section class="block stage-hope reveal">
+    <span class="verse-eyebrow">민수기 26:51</span>
+    <blockquote>“이와 같이… 육십만 천칠백삼십 명이었다.”</blockquote>
+    <p class="commentary">숫자는 단순한 통계가 아니라, 하나님의 약속의 성취를 보여줍니다. 아브라함에게 주셨던 “하늘의 별과 같이”라는 약속은 여전히 이어지고 있습니다. 광야의 실패 속에서도, 생명의 흐름은 끊어지지 않았습니다.</p>
+  </section>
+
+  <section class="block stage-hope reveal">
+    <span class="verse-eyebrow">민수기 26:53</span>
+    <blockquote>“이들에게 명수에 따라 땅을 유업으로 나누어 주어야 한다.”</blockquote>
+    <p class="commentary">이제 이야기는 ‘땅’으로 향합니다. 하나님은 단지 사람을 구원하시는 것에 그치지 않고, 그들이 머물고 살아갈 ‘유업’을 준비하십니다. 이것은 창조의 회복이며, 하나님과 함께 거하는 삶으로의 초대입니다.</p>
+  </section>
+
+  <section class="block stage-hope reveal">
+    <span class="verse-eyebrow">민수기 26:55</span>
+    <blockquote>“그 땅은 제비를 뽑아 나누어야 하며…”</blockquote>
+    <p class="commentary">사람의 계산이 아니라, 하나님의 주권에 따라 나누어집니다. 이는 하나님과의 관계가 단순한 계약이 아니라 ‘인도’임을 보여줍니다. 하나님은 자신의 백성을 직접 이끌어 가십니다.</p>
+  </section>
+
+  <p class="transition-line reveal">마지막으로, 이 모든 이야기의 결론이 선언됩니다.</p>
+
+  <section class="block stage-hope reveal">
+    <span class="verse-eyebrow">민수기 26:65</span>
+    <blockquote>“그들 가운데 한 사람도 살아남지 못하였다… 갈렙과 여호수아를 제외하고는…”</blockquote>
+    <p class="commentary">광야에서 시작된 세대는 끝내 약속의 땅에 들어가지 못했습니다. 그러나 완전히 끝난 것은 아닙니다. 하나님은 ‘믿음으로 선택한 자’를 통해 새로운 시작을 이어가십니다.</p>
+  </section>
+
+  <div class="divider-line reveal"><hr></div>
+
+  <section class="closing reveal">
+    <div class="closing-inner">
+      <p>이렇게 이야기를 따라가다 보면, 하나의 흐름이 선명하게 드러납니다.</p>
+      <p>창조된 사람은 생명을 위해 하나님과 연합하도록 부름받았습니다. 그러나 사람은 선택을 통해 다른 것과 결합하며 길을 잃습니다. 그 결과는 심판이지만, 하나님은 그 심판 속에서도 새로운 시작을 준비하십니다. 그리고 다시 사람을 세우시고, 인도하시며, 결국 ‘유업’과 ‘연합’으로 이끄십니다.</p>
+      <p>민수기 25장과 26장은 단절과 회복, 죽음과 재창조가 맞물린 장입니다. 여기서 우리는 깨닫게 됩니다. 하나님의 궁극적인 목적은 단순히 죄를 심판하는 것이 아니라, 사람을 다시 자신과의 온전한 연합으로 이끄는 데 있다는 것을.</p>
+      <p class="closing-final">광야는 끝나가고 있습니다.<br>그러나 하나님의 경륜은 이제 본격적으로 성취를 향해 나아가고 있습니다.</p>
+    </div>
+  </section>
+
+</main>
+
+<script>
+  // ---- Canvas: 재의 불티가 별로 화하다 (ember → starfield, tied to scroll progress) ----
+  const canvas = document.getElementById('field');
+  const ctx = canvas.getContext('2d');
+  let W, H, DPR;
+
+  function resize(){
+    DPR = Math.min(window.devicePixelRatio || 1, 2);
+    W = window.innerWidth;
+    H = window.innerHeight;
+    canvas.width = W * DPR;
+    canvas.height = H * DPR;
+    canvas.style.width = W + 'px';
+    canvas.style.height = H + 'px';
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const COUNT = 130;
+  const particles = [];
+  for(let i=0;i<COUNT;i++){
+    particles.push({
+      x: Math.random()*W,
+      y: Math.random()*H,
+      r: 0.6 + Math.random()*1.8,
+      baseSpeed: 0.15 + Math.random()*0.5,
+      drift: (Math.random()-0.5)*0.3,
+      flicker: Math.random()*Math.PI*2,
+      flickerSpeed: 0.02 + Math.random()*0.05,
+      twinklePhase: Math.random()*Math.PI*2
+    });
+  }
+
+  function lerp(a,b,t){ return a + (b-a)*t; }
+
+  function hexToRgb(hex){
+    const v = parseInt(hex.slice(1),16);
+    return [ (v>>16)&255, (v>>8)&255, v&255 ];
+  }
+  const emberColor = hexToRgb('#c9573b');
+  const goldColor  = hexToRgb('#e8c878');
+
+  let progress = 0; // 0 = judgment (ember), 1 = hope (starfield)
+  function updateProgress(){
+    const doc = document.documentElement;
+    const max = doc.scrollHeight - window.innerHeight;
+    progress = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+  }
+  window.addEventListener('scroll', updateProgress, {passive:true});
+  updateProgress();
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+
+    // ambient gradient wash that shifts with progress
+    const grad = ctx.createRadialGradient(W*0.5, H*0.35, 0, W*0.5, H*0.5, Math.max(W,H)*0.75);
+    const c1 = [lerp(122,40,progress), lerp(31,28,progress), lerp(26,14,progress)];
+    grad.addColorStop(0, `rgba(${c1[0]},${c1[1]},${c1[2]},0.22)`);
+    grad.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0,0,W,H);
+
+    const col = [
+      lerp(emberColor[0], goldColor[0], progress),
+      lerp(emberColor[1], goldColor[1], progress),
+      lerp(emberColor[2], goldColor[2], progress)
+    ];
+
+    for(const p of particles){
+      // motion: chaotic ember rise -> slow stellar drift
+      const chaos = 1 - progress;
+      p.flicker += p.flickerSpeed * (0.6 + chaos);
+      p.y -= p.baseSpeed * (0.4 + chaos*1.1);
+      p.x += Math.sin(p.flicker) * (0.5 * chaos) + p.drift * (0.15 + progress*0.1);
+
+      if(p.y < -10){
+        p.y = H + 10;
+        p.x = Math.random()*W;
+      }
+      if(p.x < -10) p.x = W+10;
+      if(p.x > W+10) p.x = -10;
+
+      p.twinklePhase += 0.03;
+      const twinkle = 0.55 + 0.45*Math.sin(p.twinklePhase + progress*3);
+      const alpha = (0.35 + 0.5*twinkle) * (0.7 + progress*0.3);
+
+      ctx.beginPath();
+      const glow = p.r * (2.2 + progress*1.4);
+      const rg = ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,glow);
+      rg.addColorStop(0, `rgba(${col[0]},${col[1]},${col[2]},${alpha})`);
+      rg.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = rg;
+      ctx.arc(p.x,p.y,glow,0,Math.PI*2);
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.fillStyle = `rgba(${col[0]},${col[1]},${col[2]},${Math.min(1,alpha+0.25)})`;
+      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fill();
+    }
+
+    requestAnimationFrame(draw);
+  }
+  draw();
+
+  // ---- Scroll reveal ----
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        entry.target.classList.add('in');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(el=> io.observe(el));
+</script>
+
+</body>
+</html>

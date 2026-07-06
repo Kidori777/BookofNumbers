@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>타오르는 신실함 — 민수기 28장~30장</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@200;300;400;500;600;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-ash:#120d0a;
+    --bg-ash-2:#1c130d;
+    --ember:#c65d2e;
+    --ember-light:#e08a52;
+    --gold:#d9a85c;
+    --gold-soft:#f0cf95;
+    --smoke:#8a8074;
+    --parchment:#ede3d0;
+    --parchment-dim:#b8ab92;
+    --night-indigo:#141a2c;
+    --night-indigo-2:#1e2440;
+    --moon-silver:#c9d3e0;
+    --moon-soft:#e9eef7;
+    --violet:#4a4570;
+    --hair:rgba(217,168,92,0.22);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:'Noto Serif KR', serif;
+    font-style:normal !important;
+    background:var(--bg-ash);
+    color:var(--parchment);
+    overflow-x:hidden;
+    line-height:1.9;
+  }
+  em, i, .italic{font-style:normal !important;}
+
+  canvas#bgCanvas{
+    position:fixed; top:0; left:0; width:100%; height:100%;
+    z-index:0; pointer-events:none;
+  }
+
+  .wrap{position:relative; z-index:2;}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    min-height:100vh;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center;
+    padding:40px 20px;
+    position:relative;
+  }
+  .hero-eyebrow{
+    letter-spacing:0.45em; font-size:12px; font-weight:400;
+    color:var(--gold); text-transform:uppercase; margin-bottom:28px;
+    opacity:0; animation:fadeIn 1.6s ease forwards 0.3s;
+  }
+  .hero-title{
+    font-size:clamp(42px, 8vw, 92px);
+    font-weight:900;
+    letter-spacing:0.02em;
+    background:linear-gradient(180deg, var(--gold-soft) 0%, var(--ember) 60%, var(--ember-light) 100%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    margin-bottom:22px; line-height:1.25;
+    opacity:0; animation:fadeIn 1.8s ease forwards 0.6s;
+  }
+  .hero-sub{
+    font-size:clamp(16px, 2.4vw, 20px);
+    color:var(--parchment-dim); font-weight:300; letter-spacing:0.08em;
+    margin-bottom:44px;
+    opacity:0; animation:fadeIn 1.8s ease forwards 1s;
+  }
+  .hero-verse{
+    max-width:640px; font-size:17px; color:var(--gold-soft);
+    font-weight:300; letter-spacing:0.02em; line-height:2;
+    border-top:1px solid var(--hair); border-bottom:1px solid var(--hair);
+    padding:26px 10px;
+    opacity:0; animation:fadeIn 1.8s ease forwards 1.4s;
+  }
+  .hero-scroll{
+    position:absolute; bottom:40px; left:50%; transform:translateX(-50%);
+    font-size:11px; letter-spacing:0.3em; color:var(--smoke);
+    opacity:0; animation:fadeIn 1.8s ease forwards 2s;
+  }
+  @keyframes fadeIn{ to{opacity:1;} }
+
+  /* ---------- SECTIONS ---------- */
+  .section{
+    position:relative;
+    padding:130px 20px;
+    max-width:840px; margin:0 auto;
+  }
+  .section-divider{
+    display:flex; align-items:center; gap:18px;
+    max-width:840px; margin:0 auto; opacity:0.5;
+  }
+  .section-divider .line{ flex:1; height:1px; background:var(--hair); }
+  .section-divider .mark{ font-size:12px; letter-spacing:0.3em; color:var(--gold); }
+
+  .eyebrow{
+    display:inline-block; font-size:12px; letter-spacing:0.35em;
+    color:var(--gold); text-transform:uppercase; margin-bottom:18px;
+    font-weight:500;
+  }
+  .section-title{
+    font-size:clamp(26px, 4.2vw, 38px); font-weight:700; color:var(--parchment);
+    margin-bottom:10px; letter-spacing:0.01em;
+  }
+  .section-ref{
+    font-size:14px; color:var(--parchment-dim); font-weight:300; letter-spacing:0.06em;
+    margin-bottom:44px;
+  }
+  .section-intro{
+    font-size:16px; color:var(--parchment-dim); font-weight:300;
+    margin-bottom:40px; max-width:640px;
+  }
+
+  .verse-list{ display:flex; flex-direction:column; gap:2px; }
+  .verse{
+    display:flex; gap:20px; padding:18px 6px;
+    border-bottom:1px solid rgba(237,227,208,0.06);
+  }
+  .verse-num{
+    flex:0 0 auto; width:34px; height:34px; border-radius:50%;
+    border:1px solid var(--hair);
+    display:flex; align-items:center; justify-content:center;
+    font-size:13px; color:var(--gold); font-weight:500;
+  }
+  .verse-text{
+    font-size:17px; font-weight:300; color:var(--parchment);
+    letter-spacing:0.01em;
+  }
+
+  .reveal{ opacity:0; transform:translateY(36px); transition:opacity 1s ease, transform 1s ease; }
+  .reveal.show{ opacity:1; transform:translateY(0); }
+
+  /* ---------- TABERNACLES CHART ---------- */
+  .chart-wrap{
+    margin:44px 0 20px; padding:34px 22px;
+    border:1px solid var(--hair); border-radius:6px;
+    background:linear-gradient(180deg, rgba(198,93,46,0.05), rgba(0,0,0,0));
+  }
+  .chart-caption{
+    font-size:13px; color:var(--parchment-dim); font-weight:300; margin-bottom:26px;
+    letter-spacing:0.02em;
+  }
+  .chart-bars{
+    display:flex; align-items:flex-end; gap:10px; height:200px;
+  }
+  .bar-col{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%; }
+  .bar-count{ font-size:13px; color:var(--gold-soft); margin-bottom:8px; font-weight:500; }
+  .bar{
+    width:100%; max-width:34px;
+    background:linear-gradient(180deg, var(--gold-soft), var(--ember));
+    border-radius:3px 3px 0 0;
+    transition:height 1.4s cubic-bezier(.2,.8,.2,1);
+  }
+  .bar-col.day8 .bar{ background:linear-gradient(180deg, var(--moon-soft), var(--violet)); }
+  .bar-label{ margin-top:10px; font-size:11px; color:var(--smoke); letter-spacing:0.02em; text-align:center; }
+
+  /* ---------- VOWS (moonlight theme) ---------- */
+  .section.vows{
+    background:radial-gradient(ellipse at 50% 0%, rgba(74,69,112,0.25), transparent 60%);
+  }
+  .vows .eyebrow{ color:var(--moon-silver); }
+  .vows .section-title{ color:var(--moon-soft); }
+  .vows .verse-num{ color:var(--moon-silver); border-color:rgba(201,211,224,0.25); }
+  .vows .section-divider .mark{ color:var(--moon-silver); }
+
+  .quote-block{
+    margin:40px 0; padding:30px 28px;
+    border-left:2px solid var(--moon-silver);
+    background:rgba(201,211,224,0.05);
+    font-size:18px; font-weight:300; color:var(--moon-soft);
+    letter-spacing:0.01em;
+  }
+
+  .closing{
+    min-height:70vh; display:flex; align-items:center; justify-content:center;
+    text-align:center; padding:80px 20px;
+  }
+  .closing-mark{
+    font-size:14px; letter-spacing:0.4em; color:var(--moon-silver); text-transform:uppercase;
+  }
+
+  @media (max-width:640px){
+    .section{ padding:90px 20px; }
+    .verse{ gap:14px; }
+    .verse-text{ font-size:16px; }
+    .chart-bars{ height:150px; gap:6px; }
+    .bar-label{ font-size:9px; }
+    .bar-count{ font-size:11px; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="bgCanvas"></canvas>
+
+<div class="wrap">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-eyebrow">민수기 28장 · 29장 · 30장</div>
+    <h1 class="hero-title">타오르는<br>신실함</h1>
+    <p class="hero-sub">날마다 바쳐지는 향기, 입술에서 나온 말의 무게</p>
+    <p class="hero-verse">
+      “너희는 나의 제물, 나의 음식 곧 나를 만족시키는 향기인 화제물을<br>
+      정해진 때에 내게 삼가 바쳐야 한다.” — 민수기 28:2
+    </p>
+    <div class="hero-scroll">S C R O L L</div>
+  </section>
+
+  <!-- a. 화제물의 원리 -->
+  <section class="section reveal">
+    <div class="eyebrow">A. 화제물의 원리</div>
+    <h2 class="section-title">하나님을 만족시키는 향기</h2>
+    <div class="section-ref">민수기 28:1-2</div>
+    <div class="verse-list">
+      <div class="verse"><div class="verse-num">1</div><div class="verse-text">여호와께서 모세에게 말씀하셨다.</div></div>
+      <div class="verse"><div class="verse-num">2</div><div class="verse-text">“너는 이스라엘 자손에게 명령하여 그들에게 말하여라. ‘너희는 나의 제물, 나의 음식 곧 나를 만족시키는 향기인 화제물을 정해진 때에 내게 삼가 바쳐야 한다.’</div></div>
+    </div>
+  </section>
+
+  <div class="section-divider reveal"><div class="line"></div><div class="mark">◆</div><div class="line"></div></div>
+
+  <!-- b. 매일의 번제물 -->
+  <section class="section reveal">
+    <div class="eyebrow">B. 매일의 번제물</div>
+    <h2 class="section-title">날마다 바치는 번제물</h2>
+    <div class="section-ref">민수기 28:3-8</div>
+    <div class="verse-list">
+      <div class="verse"><div class="verse-num">3</div><div class="verse-text">너는 또 그들에게 말하여라. ‘너희가 여호와에게 바쳐야 할 화제물은 이러하다. 흠 없는 일 년 된 어린 숫양 두 마리를 매일의 번제물로 날마다 바쳐야 한다.</div></div>
+      <div class="verse"><div class="verse-num">4</div><div class="verse-text">어린양 한 마리는 아침에 바치고, 다른 한 마리는 어스름한 저녁에 바쳐야 한다.</div></div>
+      <div class="verse"><div class="verse-num">5</div><div class="verse-text">또 고운 가루 십분의 일 에바와 찧어 짠 기름 사분의 일 힌을 섞은 것을 소제물로 바쳐야 한다.</div></div>
+      <div class="verse"><div class="verse-num">6</div><div class="verse-text">이것은 시나이산에서 정한 매일의 번제물로서, 여호와를 만족시키는 향기 곧 여호와에게 바치는 화제물이다.</div></div>
+      <div class="verse"><div class="verse-num">7</div><div class="verse-text">그에 딸린 전제물은 어린양 한 마리에 포도주 사분의 일 힌이어야 한다. 너희는 성소에서 여호와에게 독한 술을 전제물로 부어 바쳐야 한다.</div></div>
+      <div class="verse"><div class="verse-num">8</div><div class="verse-text">어스름한 저녁에는 다른 한 마리를 바쳐야 한다. 너희는 아침에 한 것처럼 그것을 소제물과 그에 딸린 전제물과 함께 화제물 곧 여호와를 만족시키는 향기로 바쳐야 한다.’</div></div>
+    </div>
+  </section>
+
+  <div class="section-divider reveal"><div class="line"></div><div class="mark">◆</div><div class="line"></div></div>
+
+  <!-- c. 안식일 번제물 -->
+  <section class="section reveal">
+    <div class="eyebrow">C. 안식일의 번제물</div>
+    <h2 class="section-title">안식일마다 바치는 번제물</h2>
+    <div class="section-ref">민수기 28:9-10</div>
+    <div class="verse-list">
+      <div class="verse"><div class="verse-num">9</div><div class="verse-text">‘안식일에는 흠 없는 일 년 된 어린 숫양 두 마리와, 기름을 섞은 고운 가루 십분의 이 에바의 소제물과, 그에 딸린 전제물을 함께 바쳐야 한다.</div></div>
+      <div class="verse"><div class="verse-num">10</div><div class="verse-text">이것이 매일의 번제물과 그에 딸린 전제물과는 별도로 안식일마다 바치는 번제물이다.’</div></div>
+    </div>
+  </section>
+
+  <div class="section-divider reveal"><div class="line"></div><div class="mark">◆</div><div class="line"></div></div>
+
+  <!-- d. 초하루 번제물 -->
+  <section class="section reveal">
+    <div class="eyebrow">D. 초하루의 번제물</div>
+    <h2 class="section-title">매달 초하룻날에 바치는 번제물</h2>
+    <div class="section-ref">민수기 28:11-15</div>
+    <div class="verse-list">
+      <div class="verse"><div class="verse-num">11</div><div class="verse-text">‘너희는 매달 초하룻날에 여호와에게 번제물로 황소 두 마리와 숫양 한 마리와 흠 없는 일 년 된 어린 숫양 일곱 마리를 바쳐야 한다.</div></div>
+      <div class="verse"><div class="verse-num">12</div><div class="verse-text">황소 한 마리마다 기름을 섞은 고운 가루 십분의 삼 에바의 소제물을, 숫양 한 마리에는 기름을 섞은 고운 가루 십분의 이 에바의 소제물을,</div></div>
+      <div class="verse"><div class="verse-num">13</div><div class="verse-text">어린양 한 마리마다 기름을 섞은 고운 가루 십분의 일 에바의 소제물을 번제물 곧 여호와를 만족시키는 향기인 여호와의 화제물로 바쳐야 한다.</div></div>
+      <div class="verse"><div class="verse-num">14</div><div class="verse-text">또 그에 딸린 전제물은 황소 한 마리에 포도주 반 힌, 숫양 한 마리에 삼분의 일 힌, 어린양 한 마리에 사분의 일 힌이어야 한다. 이것이 연중 다달이 바치는 매달의 번제물이다.</div></div>
+      <div class="verse"><div class="verse-num">15</div><div class="verse-text">또 매일의 번제물과 그에 딸린 전제물 외에도 숫염소 한 마리를 속죄제물로 여호와에게 바쳐야 한다.’</div></div>
+    </div>
+  </section>
+
+  <div class="section-divider reveal"><div class="line"></div><div class="mark">◆</div><div class="line"></div></div>
+
+  <!-- e. 유월절 -->
+  <section class="section reveal">
+    <div class="eyebrow">E. 유월절의 번제물</div>
+    <h2 class="section-title">유월절에 이어서 바치는 번제물</h2>
+    <div class="section-ref">민수기 28:16-25</div>
+    <div class="verse-list">
+      <div class="verse"><div class="verse-num">16</div><div class="verse-text">‘첫째 달 곧 그달 열나흗날은 여호와의 유월절이다.</div></div>
+      <div class="verse"><div class="verse-num">17</div><div class="verse-text">그달 열닷샛날은 명절이니, 너희는 칠 일 동안 무교병을 먹어야 한다.</div></div>
+      <div class="verse"><div class="verse-num">18</div><div class="verse-text">첫날에는 거룩한 모임을 소집해야 하며, 어떤 노동도 해서는 안 된다.</div></div>
+      <div class="verse"><div class="verse-num">19</div><div class="verse-text">너희는 다만 황소 두 마리와 숫양 한 마리와 일 년 된 어린 숫양 일곱 마리를 여호와에게 화제물 곧 번제물로 바쳐야 한다. 그것들은 흠이 없는 것이어야 한다.</div></div>
+      <div class="verse"><div class="verse-num">20</div><div class="verse-text">또 기름을 섞은 고운 가루를 소제물로 바치되, 황소 한 마리에는 십분의 삼 에바, 숫양 한 마리에는 십분의 이 에바를 바쳐야 한다.</div></div>
+      <div class="verse"><div class="verse-num">21</div><div class="verse-text">어린양 일곱 마리에는 어린양 한 마리마다 십분의 일 에바를 바쳐야 한다.</div></div>
+      <div class="verse"><div class="verse-num">22</div><div class="verse-text">또 너희를 위해 속죄를 이룰 속죄제물로는 숫염소 한 마리를 바쳐야 한다.</div></div>
+      <div class="verse"><div class="verse-num">23</div><div class="verse-text">너희는 매일의 번제물인 아침 번제물 외에 이것들을 별도로 바쳐야 한다.</div></div>
+      <div class="verse"><div class="verse-num">24</div><div class="verse-text">너희는 이렇게 칠 일 동안 날마다 여호와에게 화제물의 음식 곧 여호와를 만족시키는 향기를 바쳐야 한다. 이것은 매일의 번제물과 그에 딸린 전제물과는 별도로 바쳐야 한다.</div></div>
+      <div class="verse"><div class="verse-num">25</div><div class="verse-text">칠 일째 되는 날에는 거룩한 모임을 소집해야 하며, 어떤 노동도 해서는 안 된다.’</div></div>
+    </div>
+  </section>
+
+  <div class="section-divider reveal"><div class="line"></div><div class="mark">◆</div><div class="line"></div></div>
+
+  <!-- f. 칠칠절 -->
+  <section class="section reveal">
+    <div class="eyebrow">F. 칠칠절의 번제물</div>
+    <h2 class="section-title">칠칠절에 바치는 번제물</h2>
+    <div class="section-ref">민수기 28:26-31</div>
+    <div class="verse-list">
+      <div class="verse"><div class="verse-num">26</div><div class="verse-text">‘첫 열매를 바치는 날 곧 칠칠절에 새 소제물을 여호와에게 바칠 때에도 너희는 거룩한 모임을 소집해야 하며, 어떤 노동도 해서는 안 된다.</div></div>
+      <div class="verse"><div class="verse-num">27</div><div class="verse-text">너희는 다만 여호와를 만족시키는 향기가 될 번제물로 황소 두 마리와 숫양 한 마리와 일 년 된 어린 숫양 일곱 마리를 바쳐야 한다.</div></div>
+      <div class="verse"><div class="verse-num">28</div><div class="verse-text">그에 딸린 소제물로는 기름을 섞은 고운 가루를 바치되, 황소 한 마리마다 십분의 삼 에바, 숫양 한 마리에는 십분의 이 에바,</div></div>
+      <div class="verse"><div class="verse-num">29</div><div class="verse-text">어린양 일곱 마리에는 어린양 한 마리마다 십분의 일 에바를 바쳐야 한다.</div></div>
+      <div class="verse"><div class="verse-num">30</div><div class="verse-text">또 너희를 위해 속죄를 이룰 숫염소 한 마리를 바쳐야 한다.</div></div>
+      <div class="verse"><div class="verse-num">31</div><div class="verse-text">너희는 매일의 번제물과 그에 딸린 소제물과는 별도로 그것들(그것들은 흠이 없는 것이어야 한다)을 그에 딸린 전제물과 함께 바쳐야 한다.’</div></div>
+    </div>
+  </section>
+
+  <div class="section-divider reveal"><div class="line"></div><div class="mark">◆</div><div class="line"></div></div>
+
+  <!-- g. 나팔절 -->
+  <section class="section reveal">
+    <div class="eyebrow">G. 나팔절의 번제물</div>
+    <h2 class="section-title">나팔절에 바치는 번제물</h2>
+    <div class="section-ref">민수기 29:1-6</div>
+    <div class="verse-list">
+      <div class="verse"><div class="verse-num">1</div><div class="verse-text">‘일곱째 달 곧 그달 초하룻날에 너희는 거룩한 모임을 소집해야 하며, 어떤 노동도 해서는 안 된다. 이날은 나팔을 부는 날이다.</div></div>
+      <div class="verse"><div class="verse-num">2</div><div class="verse-text">너희는 여호와를 만족시키는 향기가 될 번제물로, 황소 한 마리와 숫양 한 마리와 흠 없는 일 년 된 어린 숫양 일곱 마리를 바쳐야 한다.</div></div>
+      <div class="verse"><div class="verse-num">3</div><div class="verse-text">그에 딸린 소제물로는 기름을 섞은 고운 가루를 바치되, 황소 한 마리에는 십분의 삼 에바, 숫양 한 마리에는 십분의 이 에바,</div></div>
+      <div class="verse"><div class="verse-num">4</div><div class="verse-text">어린양 일곱 마리에는 어린양 한 마리마다 십분의 일 에바를 바쳐야 한다.</div></div>
+      <div class="verse"><div class="verse-num">5</div><div class="verse-text">또 너희를 위해 속죄를 이룰 속죄제물로는 숫염소 한 마리를 바쳐야 한다.</div></div>
+      <div class="verse"><div class="verse-num">6</div><div class="verse-text">이것들을 규례에 따라, 초하루에 바치는 번제물과 그에 딸린 소제물, 매일의 번제물과 그에 딸린 소제물, 그리고 그 제물들에 딸린 전제물과는 별도로 여호와를 만족시키는 향기 곧 여호와의 화제물로 바쳐야 한다.’</div></div>
+    </div>
+  </section>
+
+  <div class="section-divider reveal"><div class="line"></div><div class="mark">◆</div><div class="line"></div></div>
+
+  <!-- h. 속죄일 -->
+  <section class="section reveal">
+    <div class="eyebrow">H. 속죄일의 번제물</div>
+    <h2 class="section-title">속죄일에 바치는 번제물</h2>
+    <div class="section-ref">민수기 29:7-11</div>
+    <div class="verse-list">
+      <div class="verse"><div class="verse-num">7</div><div class="verse-text">‘이 일곱째 달 초열흘날에도 너희는 거룩한 모임을 소집해야 하고, 너희의 혼을 괴롭혀야 하며, 어떤 일도 해서는 안 된다.</div></div>
+      <div class="verse"><div class="verse-num">8</div><div class="verse-text">너희는 여호와를 만족시키는 향기가 될 번제물로 황소 한 마리와 숫양 한 마리와 일 년 된 어린 숫양 일곱 마리를 바쳐야 한다. 그것들은 흠이 없는 것이어야 한다.</div></div>
+      <div class="verse"><div class="verse-num">9</div><div class="verse-text">그에 딸린 소제물로는 기름을 섞은 고운 가루를 바치되, 황소 한 마리에는 십분의 삼 에바, 숫양 한 마리에는 십분의 이 에바,</div></div>
+      <div class="verse"><div class="verse-num">10</div><div class="verse-text">어린양 일곱 마리에는 어린양 한 마리마다 십분의 일 에바를 바쳐야 한다.</div></div>
+      <div class="verse"><div class="verse-num">11</div><div class="verse-text">속죄제물로는 숫염소 한 마리를 바쳐야 한다. 이것들을 속죄를 위한 속죄제물, 매일의 번제물과 그에 딸린 소제물, 그리고 그 제물들에 딸린 전제물과는 별도로 바쳐야 한다.’</div></div>
+    </div>
+  </section>
+
+  <div class="section-divider reveal"><div class="line"></div><div class="mark">◆</div><div class="line"></div></div>
+
+  <!-- i. 장막절 -->
+  <section class="section reveal">
+    <div class="eyebrow">I. 장막절의 번제물</div>
+    <h2 class="section-title">장막절에 바치는 번제물</h2>
+    <div class="section-ref">민수기 29:12-38</div>
+
+    <div class="chart-wrap">
+      <div class="chart-caption">칠 일 동안, 황소의 수는 열세 마리에서 하루에 한 마리씩 줄어든다. 여덟째 날, 마지막 한 마리로 절기는 조용히 닫힌다.</div>
+      <div class="chart-bars">
+        <div class="bar-col"><div class="bar-count">13</div><div class="bar" style="height:100%"></div><div class="bar-label">첫째<br>날</div></div>
+        <div class="bar-col"><div class="bar-count">12</div><div class="bar" style="height:92%"></div><div class="bar-label">둘째<br>날</div></div>
+        <div class="bar-col"><div class="bar-count">11</div><div class="bar" style="height:85%"></div><div class="bar-label">셋째<br>날</div></div>
+        <div class="bar-col"><div class="bar-count">10</div><div class="bar" style="height:77%"></div><div class="bar-label">넷째<br>날</div></div>
+        <div class="bar-col"><div class="bar-count">9</div><div class="bar" style="height:69%"></div><div class="bar-label">다섯째<br>날</div></div>
+        <div class="bar-col"><div class="bar-count">8</div><div class="bar" style="height:62%"></div><div class="bar-label">여섯째<br>날</div></div>
+        <div class="bar-col"><div class="bar-count">7</div><div class="bar" style="height:54%"></div><div class="bar-label">일곱째<br>날</div></div>
+        <div class="bar-col day8"><div class="bar-count">1</div><div class="bar" style="height:8%"></div><div class="bar-label">여덟째<br>날 (엄숙한 집회)</div></div>
+      </div>
+    </div>
+
+    <div class="verse-list">
+      <div class="verse"><div class="verse-num">12</div><div class="verse-text">‘일곱째 달 열닷샛날에 너희는 거룩한 모임을 소집해야 한다. 너희는 어떤 노동도 해서는 안 되며, 칠 일 동안 여호와에게 명절을 지내야 한다.</div></div>
+      <div class="verse"><div class="verse-num">13</div><div class="verse-text">너희는 번제물 곧 여호와를 만족시키는 향기인 화제물로 황소 열세 마리와 숫양 두 마리와 일 년 된 어린 숫양 열네 마리를 바쳐야 한다. 그것들은 흠이 없는 것이어야 한다.</div></div>
+      <div class="verse"><div class="verse-num">14</div><div class="verse-text">그에 딸린 소제물로는 기름을 섞은 고운 가루를 바치되, 황소 열세 마리에는 황소 한 마리마다 십분의 삼 에바, 숫양 두 마리에는 숫양 한 마리마다 십분의 이 에바,</div></div>
+      <div class="verse"><div class="verse-num">15</div><div class="verse-text">어린양 열네 마리에는 어린양 한 마리마다 십분의 일 에바를 바쳐야 한다.</div></div>
+      <div class="verse"><div class="verse-num">16</div><div class="verse-text">또 속죄제물로는 숫염소 한 마리를 바쳐야 한다. 이것들을 매일의 번제물과 그에 딸린 소제물 그리고 그에 딸린 전제물과는 별도로 바쳐야 한다.</div></div>
+      <div class="verse"><div class="verse-num">17</div><div class="verse-text">둘째 날에는 황소 열두 마리와 숫양 두 마리와 흠 없는 일 년 된 어린 숫양 열네 마리를 바쳐야 한다.</div></div>
+      <div class="verse"><div class="verse-num">18</div><div class="verse-text">그에 딸린 소제물과 전제물은 그 황소와 숫양과 어린양의 수대로 규례에 따라 바쳐야 한다.</div></div>
+      <div class="verse"><div class="verse-num">19</div><div class="verse-text">또 속죄제물로는 숫염소 한 마리를 바쳐야 한다. 이것들을 매일의 번제물과 그에 딸린 소제물 그리고 그에 딸린 전제물과는 별도로 바쳐야 한다.</div></div>
+      <div class="verse"><div class="verse-num">20</div><div class="verse-text">셋째 날에는 황소 열한 마리와 숫양 두 마리와 흠 없는 일 년 된 어린 숫양 열네 마리를 바쳐야 한다.</div></div>
+      <div class="verse"><div class="verse-num">21</div><div class="verse-text">그에 딸린 소제물과 전제물은 그 황소와 숫양과 어린양의 수대로 규례에 따라 바쳐야 한다.</div></div>
+      <div class="verse"><div class="verse-num">22</div><div class="verse-text">또 속죄제물로는 숫염소 한 마리를 바쳐야 한다. 이것들을 매일의 번제물과 그에 딸린 소제물 그리고 그에 딸린 전제물과는 별도로 바쳐야 한다.</div></div>
+      <div class="verse"><div class="verse-num">23</div><div class="verse-text">넷째 날에는 황소 열 마리와 숫양 두 마리와 흠 없는 일 년 된 어린 숫양 열네 마리를 바쳐야 한다.</div></div>
+      <div class="verse"><div class="verse-num">24</div><div class="verse-text">그에 딸린 소제물과 전제물은 그 황소와 숫양과 어린양의 수대로 규례에 따라 바쳐야 한다.</div></div>
+      <div class="verse"><div class="verse-num">25</div><div class="verse-text">또 속죄제물로는 숫염소 한 마리를 바쳐야 한다. 이것들을 매일의 번제물과 그에 딸린 소제물 그리고 그에 딸린 전제물과는 별도로 바쳐야 한다.</div></div>
+      <div class="verse"><div class="verse-num">26</div><div class="verse-text">다섯째 날에는 황소 아홉 마리와 숫양 두 마리와 흠 없는 일 년 된 어린 숫양 열네 마리를 바쳐야 한다.</div></div>
+      <div class="verse"><div class="verse-num">27</div><div class="verse-text">그에 딸린 소제물과 전제물은 그 황소와 숫양과 어린양의 수대로 규례에 따라 바쳐야 한다.</div></div>
+      <div class="verse"><div class="verse-num">28</div><div class="verse-text">또 속죄제물로는 숫염소 한 마리를 바쳐야 한다. 이것들을 매일의 번제물과 그에 딸린 소제물 그리고 그에 딸린 전제물과는 별도로 바쳐야 한다.</div></div>
+      <div class="verse"><div class="verse-num">29</div><div class="verse-text">여섯째 날에는 황소 여덟 마리와 숫양 두 마리와 흠 없는 일 년 된 어린 숫양 열네 마리를 바쳐야 한다.</div></div>
+      <div class="verse"><div class="verse-num">30</div><div class="verse-text">그에 딸린 소제물과 전제물은 그 황소와 숫양과 어린양의 수대로 규례에 따라 바쳐야 한다.</div></div>
+      <div class="verse"><div class="verse-num">31</div><div class="verse-text">또 속죄제물로는 숫염소 한 마리를 바쳐야 한다. 이것들을 매일의 번제물과 그에 딸린 소제물 그리고 그에 딸린 전제물과는 별도로 바쳐야 한다.</div></div>
+      <div class="verse"><div class="verse-num">32</div><div class="verse-text">일곱째 날에는 황소 일곱 마리와 숫양 두 마리와 흠 없는 일 년 된 어린 숫양 열네 마리를 바쳐야 한다.</div></div>
+      <div class="verse"><div class="verse-num">33</div><div class="verse-text">그에 딸린 소제물과 전제물은 그 황소와 숫양과 어린양의 수대로 규례에 따라 바쳐야 한다.</div></div>
+      <div class="verse"><div class="verse-num">34</div><div class="verse-text">또 속죄제물로는 숫염소 한 마리를 바쳐야 한다. 이것들을 매일의 번제물과 그에 딸린 소제물 그리고 그에 딸린 전제물과는 별도로 바쳐야 한다.</div></div>
+      <div class="verse"><div class="verse-num">35</div><div class="verse-text">여덟째 날에는 엄숙한 집회를 가져야 하며, 어떤 노동도 해서는 안 된다.</div></div>
+      <div class="verse"><div class="verse-num">36</div><div class="verse-text">너희는 다만 번제물 곧 여호와를 만족시키는 향기인 화제물로 황소 한 마리와 숫양 한 마리와 흠이 없는 일 년 된 어린 숫양 일곱 마리를 바쳐야 한다.</div></div>
+      <div class="verse"><div class="verse-num">37</div><div class="verse-text">그에 딸린 소제물과 전제물은 그 황소와 숫양과 어린양의 수대로 규례에 따라 바쳐야 한다.</div></div>
+      <div class="verse"><div class="verse-num">38</div><div class="verse-text">또 속죄제물로는 숫염소 한 마리를 바쳐야 한다. 이것들을 매일의 번제물과 그에 딸린 소제물 그리고 그에 딸린 전제물과는 별도로 바쳐야 한다.’</div></div>
+    </div>
+  </section>
+
+  <div class="section-divider reveal"><div class="line"></div><div class="mark">◆</div><div class="line"></div></div>
+
+  <!-- j. 요약 -->
+  <section class="section reveal">
+    <div class="eyebrow">J. 모든 제물의 요약</div>
+    <h2 class="section-title">날마다, 안식일마다, 초하루마다, 명절마다</h2>
+    <div class="section-ref">민수기 29:39-40</div>
+    <div class="verse-list">
+      <div class="verse"><div class="verse-num">39</div><div class="verse-text">‘너희는 정해진 명절 때마다, 너희의 서원 제물과 자원 제물과는 별도로 이상에서 말한 것들을 번제물과 소제물과 전제물과 화목제물로 여호와에게 바쳐야 한다.’ ”</div></div>
+      <div class="verse"><div class="verse-num">40</div><div class="verse-text">모세는 여호와께서 자신에게 명령하신 모든 것을 이스라엘 자손에게 말하였다.</div></div>
+    </div>
+  </section>
+
+  <!-- ============ VOWS — THEME SHIFT ============ -->
+  <section class="section vows reveal">
+    <div class="eyebrow">2. 서원에 관하여</div>
+    <h2 class="section-title">입술에서 나온 것은 지켜야 한다</h2>
+    <div class="section-ref">민수기 30:1-16</div>
+    <p class="section-intro">제단의 불이 밤낮 꺼지지 않듯, 입 밖으로 낸 말도 함부로 꺼뜨릴 수 없다. 향기로운 제물의 규례 다음에, 이제는 말의 규례가 이어진다.</p>
+
+    <div class="verse-list">
+      <div class="verse"><div class="verse-num">1</div><div class="verse-text">모세가 이스라엘 자손 각 지파의 우두머리들에게 말하였다. “이것은 여호와께서 명령하신 것입니다.</div></div>
+      <div class="verse"><div class="verse-num">2</div><div class="verse-text">‘남자가 여호와에게 서원하거나 자신을 절제하기로 맹세하여 서약한 경우, 그는 자기가 한 말을 어겨서는 안 된다. 그는 자기 입으로 말한 대로 모두 준행해야 한다.</div></div>
+    </div>
+
+    <div class="quote-block">“그는 자기가 한 말을 어겨서는 안 된다. 그는 자기 입으로 말한 대로 모두 준행해야 한다.” — 30:2</div>
+
+    <div class="verse-list">
+      <div class="verse"><div class="verse-num">3</div><div class="verse-text">그러나 여자가 처녀 때에 아버지의 집에 사는 동안 여호와께 서원하였거나 자신을 절제하기로 서약한 경우,</div></div>
+      <div class="verse"><div class="verse-num">4</div><div class="verse-text">아버지가 자기 딸의 서원이나 딸이 자신을 절제하기로 한 서약에 대해 듣고도 딸에게 아무 말도 하지 않으면, 그 여자의 모든 서원은 유효하며, 자신을 절제하기로 한 어떤 서약도 유효하다.</div></div>
+      <div class="verse"><div class="verse-num">5</div><div class="verse-text">그러나 아버지가 그것에 대해 들은 그날 허락하지 않으면, 그 여자의 서원이나 자신을 절제하기로 한 서약은 어떤 것도 유효하지 않다. 그 여자의 아버지가 허락하지 않았기 때문에 나 여호와가 그 여자를 용서하겠다.</div></div>
+      <div class="verse"><div class="verse-num">6</div><div class="verse-text">만약 서원한 일이 있거나 자신을 절제하겠다고 자기 입술로 경솔하게 말한 적이 있는 여자가 결혼하였는데,</div></div>
+      <div class="verse"><div class="verse-num">7</div><div class="verse-text">남편이 그것에 대해 듣고서도 들은 그날 아내에게 아무 말도 하지 않으면, 그 여자의 서원은 유효하며, 자신을 절제하기로 한 서약도 유효하다.</div></div>
+      <div class="verse"><div class="verse-num">8</div><div class="verse-text">그러나 남편이 그것에 대해 들은 그날 허락하지 않으면, 남편은 아내가 한 서원과 아내가 자신을 절제하겠다고 자기 입술로 경솔하게 말한 것을 무효로 만드는 것이 된다. 그러면 나 여호와가 그 여자를 용서하겠다.</div></div>
+      <div class="verse"><div class="verse-num">9</div><div class="verse-text">그러나 과부나 이혼당한 여자의 서원 곧 자신을 절제하기로 한 모든 서약은 그 여자에게 유효하다.</div></div>
+      <div class="verse"><div class="verse-num">10</div><div class="verse-text">만일 아내가 남편의 집에서 서원을 하거나 자신을 절제하기로 맹세하며 서약하였는데,</div></div>
+      <div class="verse"><div class="verse-num">11</div><div class="verse-text">남편이 그것에 대해 듣고도 아내에게 아무 말도 하지 않고 반대하지 않으면, 그 여자의 모든 서원은 유효하며, 자신을 절제하기로 한 어떤 서약도 유효하다.</div></div>
+      <div class="verse"><div class="verse-num">12</div><div class="verse-text">그러나 남편이 그것에 대해 들은 그날 그것들을 무효로 만들면, 그 여자가 한 서원이나 자신을 절제하기로 한 서약과 관련하여 그 여자의 입술에서 나온 모든 것은 유효하지 않게 된다. 남편이 그것들을 무효로 만들었으니, 나 여호와가 그 여자를 용서하겠다.</div></div>
+      <div class="verse"><div class="verse-num">13</div><div class="verse-text">아내가 한 모든 서원과 자기의 혼을 괴롭혀 절제하기로 한 모든 맹세는, 남편이 성립시킬 수도 있고 남편이 무효로 만들 수도 있다.</div></div>
+      <div class="verse"><div class="verse-num">14</div><div class="verse-text">그러나 남편이 여러 날이 지나도록 아내에게 아무 말도 하지 않으면, 그는 아내의 모든 서원과 아내가 한 모든 서약을 성립시키는 것이 된다. 그가 그것에 대해 들은 그날 아내에게 아무 말도 하지 않았기 때문에 그것들이 성립되는 것이다.</div></div>
+      <div class="verse"><div class="verse-num">15</div><div class="verse-text">그러나 남편이 그것에 대해 듣고 어느 정도 지난 다음에 그것들을 무효로 만들면, 그는 아내의 죄악을 짊어져야 한다.’ ”</div></div>
+      <div class="verse"><div class="verse-num">16</div><div class="verse-text">이상은 남편과 아내 사이, 아버지와 아버지 집에 사는 처녀 딸 사이의 관계에 대하여 여호와께서 모세에게 명령하신 율례이다.</div></div>
+    </div>
+  </section>
+
+  <!-- CLOSING -->
+  <section class="closing reveal">
+    <div class="closing-mark">민수기 28 · 29 · 30</div>
+  </section>
+
+</div>
+
+<script>
+  // ---------- Canvas: ember → moonlight particle field ----------
+  const canvas = document.getElementById('bgCanvas');
+  const ctx = canvas.getContext('2d');
+  let W, H;
+  function resize(){ W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const emberColor = [198, 93, 46];
+  const goldColor  = [217, 168, 92];
+  const silverColor= [201, 211, 224];
+  const violetColor= [74, 69, 112];
+
+  function lerp(a,b,t){ return a + (b-a)*t; }
+  function lerpColor(c1, c2, t){
+    return [ lerp(c1[0],c2[0],t), lerp(c1[1],c2[1],t), lerp(c1[2],c2[2],t) ];
+  }
+
+  const PARTICLE_COUNT = 90;
+  const particles = [];
+  for(let i=0;i<PARTICLE_COUNT;i++){
+    particles.push({
+      x: Math.random()*W,
+      y: Math.random()*H,
+      r: Math.random()*2 + 0.6,
+      speed: Math.random()*0.5 + 0.15,
+      drift: Math.random()*1 - 0.5,
+      phase: Math.random()*Math.PI*2,
+      warm: Math.random()
+    });
+  }
+
+  let theme = 0;       // 0 = fire, 1 = moonlight
+  let themeTarget = 0;
+
+  function updateTheme(){
+    const scrollTop = window.scrollY;
+    const maxScroll = document.body.scrollHeight - window.innerHeight;
+    const frac = maxScroll > 0 ? scrollTop / maxScroll : 0;
+    themeTarget = frac > 0.86 ? 1 : 0;
+    theme = lerp(theme, themeTarget, 0.02);
+  }
+  window.addEventListener('scroll', ()=>{}, {passive:true});
+
+  function animate(){
+    updateTheme();
+    ctx.clearRect(0,0,W,H);
+
+    // subtle base glow depending on theme
+    const bg1 = lerpColor([28,19,13],[20,26,44], theme);
+    const grad = ctx.createRadialGradient(W*0.5, H*0.15, 0, W*0.5, H*0.15, H*0.9);
+    grad.addColorStop(0, `rgba(${bg1[0]},${bg1[1]},${bg1[2]},0.35)`);
+    grad.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0,0,W,H);
+
+    for(const p of particles){
+      p.phase += 0.02;
+      const sway = Math.sin(p.phase) * p.drift;
+      p.x += sway * 0.3;
+      p.y -= p.speed * (1 - theme*0.55);
+
+      if(p.y < -10){ p.y = H + 10; p.x = Math.random()*W; }
+      if(p.x < -10) p.x = W+10;
+      if(p.x > W+10) p.x = -10;
+
+      const baseColor = p.warm > 0.5 ? goldColor : emberColor;
+      const targetColor = p.warm > 0.5 ? silverColor : violetColor;
+      const col = lerpColor(baseColor, targetColor, theme);
+      const alpha = 0.25 + 0.35 * Math.abs(Math.sin(p.phase));
+
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r + theme*0.4, 0, Math.PI*2);
+      ctx.fillStyle = `rgba(${col[0]|0},${col[1]|0},${col[2]|0},${alpha})`;
+      ctx.fill();
+    }
+    requestAnimationFrame(animate);
+  }
+  animate();
+
+  // ---------- Scroll reveal ----------
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        entry.target.classList.add('show');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  revealEls.forEach(el=> io.observe(el));
+</script>
+
+</body>
+</html>
